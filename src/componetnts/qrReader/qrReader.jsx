@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useEffect, useState } from 'react';
-import { signOut } from 'firebase/auth';
-import appFirebase from '../../log-credenciales';
-import { getAuth } from 'firebase/auth';
+
 import '../qrReader/qrReader.css';
 
-const auth = getAuth(appFirebase);
+
 
 function QrReader({ correoUsuario }) {
     const [dniEmpleado, setDniEmpleado] = useState('');
@@ -65,19 +63,10 @@ function QrReader({ correoUsuario }) {
         }
     }, []);
 
-    const handleLogout = () => {
-        signOut(auth).then(() => {
-            console.log("Usuario cerró sesión exitosamente");
-        }).catch((error) => {
-            console.error("Error al cerrar sesión: ", error);
-        });
-    };
-
     return (
         <div className='main-div'>
             <h1>Escaner de Códigos QR</h1>
             <h2>Bienvenido {correoUsuario}</h2>
-            <button className='btn btn-primary' onClick={handleLogout}>Logout</button>
             {scanResult
                 ? <div>Success: <a>{scanResult}</a></div>
                 : <div id="reader"></div>

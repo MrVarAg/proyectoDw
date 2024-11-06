@@ -1,5 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
+import { signOut } from 'firebase/auth';
+import appFirebase from '../log-credenciales';
+import { getAuth } from 'firebase/auth';
+
+const auth = getAuth(appFirebase);
 
 const HorarioForm = () => {
     const [nombre, setNombre] = useState('');
@@ -36,40 +41,53 @@ const HorarioForm = () => {
         }
     };
 
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            console.log("Usuario cerrado sesión exitosamente");
+            alert("Sesión cerrada con éxito");
+        }).catch((error) => {
+            console.error("Error al cerrar sesión: ", error);
+            alert("Hubo un error al intentar cerrar sesión");
+        });
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder="Nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-            />
-            <input
-                type="time"
-                placeholder="Hora de Entrada"
-                value={horaentrada}
-                onChange={(e) => setHoraEntrada(e.target.value)}
-            />
-            <input
-                type="time"
-                placeholder="Hora de Salida"
-                value={horasalida}
-                onChange={(e) => setHoraSalida(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Día de Inicio"
-                value={diainicio}
-                onChange={(e) => setDiaInicio(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Día de Fin"
-                value={diafin}
-                onChange={(e) => setDiaFin(e.target.value)}
-            />
-            <button type="submit">Insertar Horario</button>
-        </form>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Nombre"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                />
+                <input
+                    type="time"
+                    placeholder="Hora de Entrada"
+                    value={horaentrada}
+                    onChange={(e) => setHoraEntrada(e.target.value)}
+                />
+                <input
+                    type="time"
+                    placeholder="Hora de Salida"
+                    value={horasalida}
+                    onChange={(e) => setHoraSalida(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Día de Inicio"
+                    value={diainicio}
+                    onChange={(e) => setDiaInicio(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Día de Fin"
+                    value={diafin}
+                    onChange={(e) => setDiaFin(e.target.value)}
+                />
+                <button type="submit">Insertar Horario</button>
+            </form>
+            <button onClick={handleLogout} style={{ marginTop: '10px' }}>Logout</button>
+        </div>
     );
 };
 

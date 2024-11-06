@@ -1,4 +1,4 @@
-{/* import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 // Importar los módulos de Firebase
 import appFirebase from '../src/log-credenciales';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -6,7 +6,7 @@ const auth = getAuth(appFirebase);
 
 // Importar los componentes Login y QrReader
 import Login from '../src/componetnts/Login';
-import QrReader from '../src/componetnts/qrReader/qrReader';
+import QrReader from './componetnts/HorarioForm';
 import './App.css';
 
 function App() {
@@ -34,4 +34,3 @@ function App() {
 }
 
 export default App;
-*/}
