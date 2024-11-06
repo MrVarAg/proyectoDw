@@ -5,6 +5,7 @@ import profile from '../assets/profile.png';
 import appFirebase from '../log-credenciales';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
+
 const auth = getAuth(appFirebase);
 
 const Login = () => {

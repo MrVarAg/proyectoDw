@@ -1,32 +1,37 @@
-import { useState } from 'react'
-//Imp modulos de firebase
+{/* import { useState, useEffect } from 'react';
+// Importar los módulos de Firebase
 import appFirebase from '../src/log-credenciales';
-import {getAuth, onAuthStateChanged} from 'firebase/auth';
-const auth = getAuth(appFirebase)
-//Importar los componenentes log y Home
-import Login from '../src/componetnts/login'
-import Home from '../src/componetnts/Home'
-import './App.css'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+const auth = getAuth(appFirebase);
+
+// Importar los componentes Login y QrReader
+import Login from '../src/componetnts/Login';
+import QrReader from '../src/componetnts/qrReader/qrReader';
+import './App.css';
 
 function App() {
-   
-const [usuario, setusuario]= useState(null)
-onAuthStateChanged(auth,(usuarioFirebase)=>{
-  if(usuarioFirebase){
-    setusuario(usuarioFirebase)
-  }
-  else{
-  setusuario(null)
-  }
-})
+  const [usuario, setUsuario] = useState(null);
+
+  // Usar useEffect para gestionar el estado de autenticación
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (usuarioFirebase) => {
+      if (usuarioFirebase) {
+        setUsuario(usuarioFirebase);
+      } else {
+        setUsuario(null);
+      }
+    });
+
+    // Limpiar la suscripción cuando el componente se desmonte
+    return () => unsubscribe();
+  }, []); // Solo se ejecuta una vez cuando el componente se monta
 
   return (
     <div>
-{usuario ? <Home correoUsuario = {usuario.email}/>: <Login/>}
-
-
+      {usuario ? <QrReader correoUsuario={usuario.email} /> : <Login />}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
+*/}
