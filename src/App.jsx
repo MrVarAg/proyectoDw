@@ -7,7 +7,7 @@ const auth = getAuth(appFirebase);
 
 // Importar los componentes Login y QrReader
 import Login from '../src/componetnts/Login';
-import QrReader from './componetnts/HorarioForm';
+import QrReader from './componetnts/qrReader/qrReader';
 import './App.css';
 
 function App() {
