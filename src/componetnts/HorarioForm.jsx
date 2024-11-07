@@ -3,13 +3,19 @@ import React, { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import appFirebase from '../log-credenciales';
 import { getAuth } from 'firebase/auth';
+import { TextField, Button, Container, Typography } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+
+import CustomMenu from './customMenu';
 
 const auth = getAuth(appFirebase);
 
 const HorarioForm = () => {
     const [nombre, setNombre] = useState('');
-    const [horaentrada, setHoraEntrada] = useState('');
-    const [horasalida, setHoraSalida] = useState('');
+    const [horaentrada, setHoraEntrada] = useState(null);
+    const [horasalida, setHoraSalida] = useState(null);
     const [diainicio, setDiaInicio] = useState('');
     const [diafin, setDiaFin] = useState('');
 
@@ -28,8 +34,8 @@ const HorarioForm = () => {
                 alert('Horario insertado con éxito');
                 // Reiniciar los campos del formulario
                 setNombre('');
-                setHoraEntrada('');
-                setHoraSalida('');
+                setHoraEntrada(null);
+                setHoraSalida(null);
                 setDiaInicio('');
                 setDiaFin('');
             } else {
@@ -52,42 +58,67 @@ const HorarioForm = () => {
     };
 
     return (
-        <div>
+        <Container>
+            <div>
+            <h1>Mi aplicación</h1>
+            <CustomMenu
+                buttonLabel="Abrir Menú"
+                menuItems={['Perfil', 'Mi Cuenta', 'Cerrar sesión']}
+                onMenuItemClick="{handleMenuItemClick}"
+            />
+            </div>
+            <Typography variant="h4" gutterBottom>
+                Insertar Horario
+            </Typography>
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Nombre"
+                <TextField
+                    label="Nombre"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                 />
-                <input
-                    type="time"
-                    placeholder="Hora de Entrada"
-                    value={horaentrada}
-                    onChange={(e) => setHoraEntrada(e.target.value)}
-                />
-                <input
-                    type="time"
-                    placeholder="Hora de Salida"
-                    value={horasalida}
-                    onChange={(e) => setHoraSalida(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Día de Inicio"
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                        label="Hora de Entrada"
+                        value={horaentrada}
+                        onChange={(newValue) => setHoraEntrada(newValue)}
+                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                    />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                        label="Hora de Salida"
+                        value={horasalida}
+                        onChange={(newValue) => setHoraSalida(newValue)}
+                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                    />
+                </LocalizationProvider>
+                <TextField
+                    label="Día de Inicio"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
                     value={diainicio}
                     onChange={(e) => setDiaInicio(e.target.value)}
                 />
-                <input
-                    type="text"
-                    placeholder="Día de Fin"
+                <TextField
+                    label="Día de Fin"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
                     value={diafin}
                     onChange={(e) => setDiaFin(e.target.value)}
                 />
-                <button type="submit">Insertar Horario</button>
+                <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '10px' }}>
+                    Insertar Horario
+                </Button>
             </form>
-            <button onClick={handleLogout} style={{ marginTop: '10px' }}>Logout</button>
-        </div>
+            <Button onClick={handleLogout} variant="outlined" color="secondary" fullWidth style={{ marginTop: '10px' }}>
+                Logout
+            </Button>
+        </Container>
     );
 };
 
