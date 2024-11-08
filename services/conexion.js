@@ -49,6 +49,30 @@ app.post('/horarios', (req, res) => {
         }
     });
 });
+//Validacion de consulta
+app.get('/reporte-asistencia', (req, res) => {
+    const { fecha } = req.query;
+
+    const query = `
+        SELECT 
+            p.nombre AS nombreEmpleado,
+            p.apellido AS apellidoEmpleado,
+            a.hora_entrada AS horaEntrada,
+            a.hora_salida AS horaDeSalida
+        FROM asistencia a 
+        JOIN empleado p ON p.dniempleado = a.dniempleado
+        WHERE a.fecha = ?
+    `;
+
+    conexion.query(query, [fecha], (error, results) => {
+        if (error) {
+            console.error("Error al obtener reporte de asistencia:", error);
+            res.status(500).json({ error });
+        } else {
+            res.json(results);
+        }
+    });
+});
 
 // Ruta para insertar una asistencia
 app.post('/asistencia', (req, res) => {
