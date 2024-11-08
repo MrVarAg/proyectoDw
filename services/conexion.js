@@ -52,23 +52,50 @@ app.post('/horarios', (req, res) => {
 // Ruta para insertar una asistencia
 app.post('/asistencia', (req, res) => {
     const { dniempleado, fecha, hora_entrada } = req.body;
-    console.log('Datos recibidos para la asistencia:', dniempleado, fecha, hora_entrada); // Verifica los datos recibidos
 
-    const insertQuery = `
-        INSERT INTO asistencia (dniempleado, fecha, hora_entrada)
-        VALUES (?, ?, ?)
+    // Primero, verificar si ya existe una entrada para el usuario en la fecha actual
+    const checkQuery = `
+        SELECT * FROM asistencia WHERE dniempleado = ? AND fecha = ?
     `;
-    
-    conexion.query(insertQuery, [dniempleado, fecha, hora_entrada], (error, result) => {
+
+    conexion.query(checkQuery, [dniempleado, fecha], (error, results) => {
         if (error) {
-            console.error("Error al insertar asistencia:", error);
-            res.status(500).json({ error: 'Error al insertar la asistencia' });
+            console.error("Error al verificar asistencia:", error);
+            res.status(500).json({ error: 'Error al verificar la asistencia' });
+            return;
+        }
+
+        if (results.length > 0) {
+            // Si ya existe un registro de entrada, se actualiza la hora de salida
+            const updateQuery = `
+                UPDATE asistencia SET hora_salida = ? WHERE dniempleado = ? AND fecha = ?
+            `;
+            conexion.query(updateQuery, [hora_entrada, dniempleado, fecha], (error, result) => {
+                if (error) {
+                    console.error("Error al actualizar hora de salida:", error);
+                    res.status(500).json({ error: 'Error al registrar la hora de salida' });
+                } else {
+                    res.status(200).json({ message: 'Hora de salida registrada con éxito' });
+                }
+            });
         } else {
-            console.log('Asistencia registrada con éxito:', result);
-            res.status(200).json({ message: 'Asistencia registrada con éxito', id: result.insertId });
+            // Si no existe registro, se inserta como hora de entrada
+            const insertQuery = `
+                INSERT INTO asistencia (dniempleado, fecha, hora_entrada)
+                VALUES (?, ?, ?)
+            `;
+            conexion.query(insertQuery, [dniempleado, fecha, hora_entrada], (error, result) => {
+                if (error) {
+                    console.error("Error al insertar asistencia:", error);
+                    res.status(500).json({ error: 'Error al registrar la asistencia' });
+                } else {
+                    res.status(200).json({ message: 'Asistencia registrada con éxito', id: result.insertId });
+                }
+            });
         }
     });
 });
+
 
 
 const PORT = 3001;

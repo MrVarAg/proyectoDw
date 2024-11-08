@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 const auth = getAuth(appFirebase);
 
 import Login from '../src/componetnts/Login';
-import QrReader from './componetnts/HorarioForm';
+import QrReader from './componetnts/qrReader/qrReader';
 import './App.css';
 
 function App() {

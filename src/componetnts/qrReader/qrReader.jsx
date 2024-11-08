@@ -1,15 +1,9 @@
 import PropTypes from 'prop-types';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useEffect, useState } from 'react';
-
 import '../qrReader/qrReader.css';
 
-
-
-function QrReader({ correoUsuario }) {
-    const [dniEmpleado, setDniEmpleado] = useState('');
-    const [fecha, setFecha] = useState('');
-    const [horaEntrada, setHoraEntrada] = useState('');
+function QrReader() {
     const [scanResult, setScanResult] = useState(null);
 
     const registrarAsistencia = async (dni, fecha, hora) => {
@@ -24,6 +18,7 @@ function QrReader({ correoUsuario }) {
             const data = await response.json();
             if (response.ok) {
                 alert('Asistencia registrada con éxito');
+                window.location.reload(); // Recargar la página para el próximo usuario
             } else {
                 alert(`Error al registrar asistencia: ${data.error}`);
             }
@@ -43,18 +38,14 @@ function QrReader({ correoUsuario }) {
 
         function success(result) {
             scanner.clear();
-            setDniEmpleado(result); // Guardar el resultado del QR como DNI del empleado
             setScanResult(result);
 
             // Capturar fecha y hora actual
             const now = new Date();
-            const formattedDate = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
+            const formattedDate = now.toISOString().split('T')[0];
             const utc6Hour = new Date(now.toLocaleString("en-US", { timeZone: "America/Guatemala" }));
-            const formattedTime = utc6Hour.toTimeString().split(' ')[0]; // "HH:MM:SS"
-            setFecha(formattedDate);
-            setHoraEntrada(formattedTime);
-
-            // Llamar a la función para registrar asistencia
+            const formattedTime = utc6Hour.toTimeString().split(' ')[0];
+            
             registrarAsistencia(result, formattedDate, formattedTime);
         }
 
@@ -66,7 +57,6 @@ function QrReader({ correoUsuario }) {
     return (
         <div className='main-div'>
             <h1>Escaner de Códigos QR</h1>
-            <h2>Bienvenido {correoUsuario}</h2>
             {scanResult
                 ? <div>Success: <a>{scanResult}</a></div>
                 : <div id="reader"></div>
