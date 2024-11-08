@@ -60,7 +60,7 @@ const HorarioForm = () => {
     return (
         <Container>
             
-            <h1>Mi aplicación</h1>
+            {/* <h1>Mi aplicación</h1> */}
            
             <Typography variant="h4" gutterBottom>
                 Insertar Horario
