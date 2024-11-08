@@ -8,7 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
-import CustomMenu from './customMenu';
+
 
 const auth = getAuth(appFirebase);
 
@@ -59,14 +59,9 @@ const HorarioForm = () => {
 
     return (
         <Container>
-            <div>
+            
             <h1>Mi aplicación</h1>
-            <CustomMenu
-                buttonLabel="Abrir Menú"
-                menuItems={['Perfil', 'Mi Cuenta', 'Cerrar sesión']}
-                onMenuItemClick="{handleMenuItemClick}"
-            />
-            </div>
+           
             <Typography variant="h4" gutterBottom>
                 Insertar Horario
             </Typography>
