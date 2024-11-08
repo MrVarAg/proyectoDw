@@ -2,9 +2,10 @@ import express from 'express';
 import mysql from 'mysql';
 import cors from 'cors';
 
+
 const app = express();
 app.use(express.json());
-app.use(cors()); // Permite que React se comunique con el servidor
+app.use(cors()); 
 
 const conexion = mysql.createConnection({
     host: "localhost",
@@ -70,7 +71,7 @@ app.post('/asistencia', (req, res) => {
             const updateQuery = `
                 UPDATE asistencia SET hora_salida = ? WHERE dniempleado = ? AND fecha = ?
             `;
-            conexion.query(updateQuery, [hora_entrada, dniempleado, fecha], (error, result) => {
+            conexion.query(updateQuery, [hora_entrada, dniempleado, fecha], (error) => {
                 if (error) {
                     console.error("Error al actualizar hora de salida:", error);
                     res.status(500).json({ error: 'Error al registrar la hora de salida' });
