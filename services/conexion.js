@@ -21,6 +21,31 @@ conexion.connect((error) => {
         console.log("Conexión a MySQL exitosa");
     }
 });
+// Ruta para insertar un aula
+app.post('/aulas', (req, res) => {
+    const { nomAula } = req.body;
+    const insertQuery = 'INSERT INTO aula (nomAula) VALUES (?)';
+    conexion.query(insertQuery, [nomAula], (error, result) => {
+        if (error) {
+            res.status(500).json({ error: 'Error al insertar el aula' });
+        } else {
+            res.status(200).json({ message: 'Aula insertada con éxito', id: result.insertId });
+        }
+    });
+});
+
+// Ruta para insertar una sección
+app.post('/secciones', (req, res) => {
+    const { nomSeccion } = req.body;
+    const insertQuery = 'INSERT INTO seccion (nomSeccion) VALUES (?)';
+    conexion.query(insertQuery, [nomSeccion], (error, result) => {
+        if (error) {
+            res.status(500).json({ error: 'Error al insertar la sección' });
+        } else {
+            res.status(200).json({ message: 'Sección insertada con éxito', id: result.insertId });
+        }
+    });
+});
 
 // Ruta para obtener horarios
 app.get('/horarios', (req, res) => {

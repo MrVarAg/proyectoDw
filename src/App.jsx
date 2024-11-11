@@ -4,9 +4,11 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 import Login from './componetnts/Login';
 import QrReader from './componetnts/qrReader/qrReader';
-import HorarioForm from './componetnts/HorarioForm';
+import HorarioForm from './componetnts/forms/HorarioForm';
 import Reports from './componetnts/Reports'; // Importa el componente Reports
 import Menu from './componetnts/menu';
+import AulaForm from './componetnts/forms/AulaForm'; // Importa el componente AulaForm
+import Seccion from './componetnts/forms/SeccionForm'
 import './App.css';
 
 const auth = getAuth(appFirebase);
@@ -51,6 +53,18 @@ function App() {
                     {selectedOption === 'reports' && (
                         <>
                             <Reports />
+                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
+                        </>
+                    )}
+                    {selectedOption === 'aula' && (
+                        <>
+                            <AulaForm />
+                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
+                        </>
+                    )}
+                    {selectedOption === 'seccion' && (
+                        <>
+                            <Seccion />
                             <button onClick={handleReturnToMenu}>Volver al Menú</button>
                         </>
                     )}

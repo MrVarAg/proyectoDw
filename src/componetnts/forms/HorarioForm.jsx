@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import { signOut } from 'firebase/auth';
-import appFirebase from '../log-credenciales';
+import appFirebase from '../../log-credenciales';
 import { getAuth } from 'firebase/auth';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';

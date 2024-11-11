@@ -54,6 +54,24 @@ const Menu = ({ onSelectOption }) => {
                     Reportes
                 </Button>
                 <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    style={{ margin: '10px 0' }}
+                    onClick={() => onSelectOption('aula')}
+                >
+                    Agregar Aula
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    style={{ margin: '10px 0' }}
+                    onClick={() => onSelectOption('seccion')}
+                >
+                    Agregar Sección
+                </Button>
+                <Button
                     variant="outlined"
                     color="secondary"
                     fullWidth
