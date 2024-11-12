@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { Button, Container, Typography, Box } from '@mui/material';
 import { signOut } from 'firebase/auth';
@@ -70,6 +71,15 @@ const Menu = ({ onSelectOption }) => {
                     onClick={() => onSelectOption('seccion')}
                 >
                     Agregar Sección
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    style={{ margin: '10px 0' }}
+                    onClick={() => onSelectOption('docente')}
+                >
+                    Agregar Docente
                 </Button>
                 <Button
                     variant="outlined"

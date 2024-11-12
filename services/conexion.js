@@ -34,6 +34,22 @@ app.post('/aulas', (req, res) => {
     });
 });
 
+app.post('/empleados', (req, res) => {
+    const { dniempleado, nombre, apellido, telefono, correo, iddepartamento, estado } = req.body;
+    const insertQuery = `
+        INSERT INTO empleado (dniempleado, nombre, apellido, telefono, correo, iddepartamento, estado) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    conexion.query(insertQuery, [dniempleado, nombre, apellido, telefono, correo, iddepartamento, estado], (error, result) => {
+        if (error) {
+            console.error("Error al insertar empleado:", error);
+            res.status(500).json({ error: 'Error al insertar el empleado' });
+        } else {
+            res.status(200).json({ message: 'Empleado insertado con éxito', id: result.insertId });
+        }
+    });
+});
+
 // Ruta para insertar una sección
 app.post('/secciones', (req, res) => {
     const { nomSeccion } = req.body;
@@ -143,6 +159,15 @@ app.post('/asistencia', (req, res) => {
                 }
             });
         }
+    });
+});
+app.get('/departamentos', (req, res) => {
+    const query = 'SELECT * FROM departamento';
+    conexion.query(query, (error) => {
+        if (error) {
+            console.error('Error al obtener los departamentos:', error);
+            res.status(500).json({ error: 'Error al obtener los departamentos' });
+        } 
     });
 });
 
