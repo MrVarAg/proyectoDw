@@ -9,7 +9,7 @@ import Reports from './componetnts/Reports'; // Importa el componente Reports
 import Menu from './componetnts/menu';
 import AulaForm from './componetnts/forms/AulaForm'; // Importa el componente AulaForm
 import Seccion from './componetnts/forms/SeccionForm'
-import Docente from './componetnts/PruebasMaterialUI' //import Docente from './componetnts/forms/DocenteForm'
+import Docente from './componetnts/forms/DocenteForm'
 
 import './App.css';
 
