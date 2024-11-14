@@ -92,28 +92,47 @@ app.post('/horarios', (req, res) => {
 });
 //Validacion de consulta
 app.get('/reporte-asistencia', (req, res) => {
-    const { fecha } = req.query;
-
-    const query = `
+    const { tipo, rango, fecha, fechaInicio, fechaFin, numeroIdentidad } = req.query;
+    
+    let query = `
         SELECT 
             p.nombre AS nombreEmpleado,
             p.apellido AS apellidoEmpleado,
+            a.fecha AS fechaAsistencia,
             a.hora_entrada AS horaEntrada,
             a.hora_salida AS horaDeSalida
         FROM asistencia a 
         JOIN empleado p ON p.dniempleado = a.dniempleado
-        WHERE a.fecha = ?
     `;
+    let queryParams = [];
 
-    conexion.query(query, [fecha], (error, results) => {
+    // Agregar filtro de número de identidad si es reporte individual
+    if (tipo === "individual" && numeroIdentidad) {
+        query += " WHERE a.dniempleado = ?";
+        queryParams.push(numeroIdentidad);
+    }
+
+    // Agregar filtros de fecha según el tipo de rango
+    if (rango === "diario" && fecha) {
+        query += tipo === "individual" ? " AND " : " WHERE ";
+        query += "a.fecha = ?";
+        queryParams.push(fecha);
+    } else if ((rango === "semanal" || rango === "mensual") && fechaInicio && fechaFin) {
+        query += tipo === "individual" ? " AND " : " WHERE ";
+        query += "a.fecha BETWEEN ? AND ?";
+        queryParams.push(fechaInicio, fechaFin);
+    }
+
+    conexion.query(query, queryParams, (error, results) => {
         if (error) {
             console.error("Error al obtener reporte de asistencia:", error);
-            res.status(500).json({ error });
+            res.status(500).json({ error: 'Error al obtener el reporte de asistencia' });
         } else {
             res.json(results);
         }
     });
 });
+
 
 // Ruta para insertar una asistencia
 app.post('/asistencia', (req, res) => {

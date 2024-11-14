@@ -21,10 +21,19 @@ const PdfReport = () => {
   const [reporteData, setReporteData] = useState([]);
   const [tipoReporte, setTipoReporte] = useState("general");
   const [rangoTiempo, setRangoTiempo] = useState("diario");
+  const [numeroIdentidad, setNumeroIdentidad] = useState("");
+  const [errorIdentidad, setErrorIdentidad] = useState("");
 
   useEffect(() => {
     const fetchReporte = async () => {
       let url = `http://localhost:3001/reporte-asistencia?tipo=${tipoReporte}&rango=${rangoTiempo}`;
+
+      if (tipoReporte === "individual" && numeroIdentidad.length === 13 && /^\d+$/.test(numeroIdentidad)) {
+        url += `&numeroIdentidad=${numeroIdentidad}`;
+      } else if (tipoReporte === "individual" && (!/^\d+$/.test(numeroIdentidad) || numeroIdentidad.length !== 13)) {
+        setErrorIdentidad("El número de identidad debe tener 13 dígitos numéricos.");
+        return;
+      }
 
       if (rangoTiempo === "diario" && fecha) {
         url += `&fecha=${fecha}`;
@@ -45,11 +54,20 @@ const PdfReport = () => {
     };
     
     fetchReporte();
-  }, [fecha, fechaInicio, fechaFin, tipoReporte, rangoTiempo]);
+  }, [fecha, fechaInicio, fechaFin, tipoReporte, rangoTiempo, numeroIdentidad]);
+
+  const handleIdentidadChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value) && value.length <= 13) {
+      setNumeroIdentidad(value);
+      setErrorIdentidad("");
+    } else {
+      setErrorIdentidad("El número de identidad debe tener 13 dígitos numéricos.");
+    }
+  };
 
   const generatePDF = () => {
     const doc = new jsPDF();
-
     const today = new Date();
     const fechaGeneracion = today.toLocaleDateString();
 
@@ -57,7 +75,6 @@ const PdfReport = () => {
     doc.setFontSize(18);
     doc.text(titulo, 14, 20);
 
-    // Fecha de generación del reporte
     doc.setFontSize(12);
     doc.text(`Fecha de generación del reporte: ${fechaGeneracion}`, 14, 30);
 
@@ -96,6 +113,19 @@ const PdfReport = () => {
           <MenuItem value="individual">Individual</MenuItem>
         </Select>
       </FormControl>
+
+      {tipoReporte === "individual" && (
+        <TextField
+          fullWidth
+          label="Número de Identidad"
+          value={numeroIdentidad}
+          onChange={handleIdentidadChange}
+          error={Boolean(errorIdentidad)}
+          helperText={errorIdentidad}
+          inputProps={{ maxLength: 13 }}
+          sx={{ mt: 2 }}
+        />
+      )}
 
       <FormControl fullWidth sx={{ mt: 2 }}>
         <InputLabel>Rango de Tiempo</InputLabel>
@@ -146,7 +176,8 @@ const PdfReport = () => {
         onClick={generatePDF}
         disabled={
           (rangoTiempo === "diario" && !fecha) ||
-          ((rangoTiempo === "semanal" || rangoTiempo === "mensual") && (!fechaInicio || !fechaFin))
+          ((rangoTiempo === "semanal" || rangoTiempo === "mensual") && (!fechaInicio || !fechaFin)) ||
+          (tipoReporte === "individual" && (numeroIdentidad.length !== 13 || Boolean(errorIdentidad)))
         }
         sx={{ mt: 3 }}
       >
