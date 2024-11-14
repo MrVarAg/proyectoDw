@@ -138,48 +138,77 @@ app.get('/reporte-asistencia', (req, res) => {
 app.post('/asistencia', (req, res) => {
     const { dniempleado, fecha, hora_entrada } = req.body;
 
-    // Primero, verificar si ya existe una entrada para el usuario en la fecha actual
-    const checkQuery = `
-        SELECT * FROM asistencia WHERE dniempleado = ? AND fecha = ?
+    // Convertir la hora de entrada a formato de objeto Date para comparación
+    const entradaHora = new Date(`1970-01-01T${hora_entrada}Z`);
+
+    // Query para obtener la clase del docente en función de la fecha, día y hora de entrada
+    const claseQuery = `
+        SELECT c.idClase 
+        FROM clase c
+        JOIN rel_clase_dia r ON c.idClase = r.idClase
+        WHERE r.diaSemana = DAYOFWEEK(?) - 1
+          AND r.horaInicio <= ? AND r.horaFin >= ?
+          AND EXISTS (
+              SELECT 1 FROM rel_emp_cla re WHERE re.dniEmpleado = ? AND re.idClase = c.idClase
+          )
     `;
 
-    conexion.query(checkQuery, [dniempleado, fecha], (error, results) => {
+    // Ejecutar la consulta para buscar el id de clase correspondiente
+    conexion.query(claseQuery, [fecha, entradaHora, entradaHora, dniempleado], (error, results) => {
         if (error) {
-            console.error("Error al verificar asistencia:", error);
-            res.status(500).json({ error: 'Error al verificar la asistencia' });
-            return;
+            console.error("Error al verificar clase:", error);
+            return res.status(500).json({ error: 'Error al verificar la clase' });
         }
 
-        if (results.length > 0) {
-            // Si ya existe un registro de entrada, se actualiza la hora de salida
-            const updateQuery = `
-                UPDATE asistencia SET hora_salida = ? WHERE dniempleado = ? AND fecha = ?
-            `;
-            conexion.query(updateQuery, [hora_entrada, dniempleado, fecha], (error) => {
-                if (error) {
-                    console.error("Error al actualizar hora de salida:", error);
-                    res.status(500).json({ error: 'Error al registrar la hora de salida' });
-                } else {
-                    res.status(200).json({ message: 'Hora de salida registrada con éxito' });
-                }
-            });
-        } else {
-            // Si no existe registro, se inserta como hora de entrada
-            const insertQuery = `
-                INSERT INTO asistencia (dniempleado, fecha, hora_entrada)
-                VALUES (?, ?, ?)
-            `;
-            conexion.query(insertQuery, [dniempleado, fecha, hora_entrada], (error, result) => {
-                if (error) {
-                    console.error("Error al insertar asistencia:", error);
-                    res.status(500).json({ error: 'Error al registrar la asistencia' });
-                } else {
-                    res.status(200).json({ message: 'Asistencia registrada con éxito', id: result.insertId });
-                }
-            });
+        if (results.length === 0) {
+            return res.status(400).json({ error: 'No hay clase asignada en este horario' });
         }
+
+        const idClase = results[0].idClase;
+
+        // Consulta para verificar si ya existe un registro de asistencia para el empleado en la fecha dada
+        const checkQuery = `
+            SELECT * FROM asistencia WHERE dniempleado = ? AND fecha = ? AND idClase = ?
+        `;
+        
+        conexion.query(checkQuery, [dniempleado, fecha, idClase], (error, existingRecords) => {
+            if (error) {
+                console.error("Error al verificar asistencia:", error);
+                return res.status(500).json({ error: 'Error al verificar la asistencia' });
+            }
+
+            if (existingRecords.length > 0) {
+                // Si ya existe un registro de entrada, actualizar la hora de salida
+                const updateQuery = `
+                    UPDATE asistencia SET hora_salida = ? WHERE dniempleado = ? AND fecha = ? AND idClase = ?
+                `;
+                conexion.query(updateQuery, [hora_entrada, dniempleado, fecha, idClase], (error) => {
+                    if (error) {
+                        console.error("Error al actualizar hora de salida:", error);
+                        return res.status(500).json({ error: 'Error al registrar la hora de salida' });
+                    } else {
+                        return res.status(200).json({ message: 'Hora de salida registrada con éxito' });
+                    }
+                });
+            } else {
+                // Si no existe un registro previo, insertar la nueva asistencia con la hora de entrada y el id de clase
+                const insertQuery = `
+                    INSERT INTO asistencia (dniempleado, fecha, hora_entrada, idClase)
+                    VALUES (?, ?, ?, ?)
+                `;
+                conexion.query(insertQuery, [dniempleado, fecha, hora_entrada, idClase], (error, result) => {
+                    if (error) {
+                        console.error("Error al insertar asistencia:", error);
+                        return res.status(500).json({ error: 'Error al registrar la asistencia' });
+                    } else {
+                        return res.status(200).json({ message: 'Asistencia registrada con éxito', id: result.insertId });
+                    }
+                });
+            }
+        });
     });
 });
+
 app.get('/departamentos', (req, res) => {
     const query = 'SELECT iddepartamento, departamento FROM departamento';
     conexion.query(query, (error, results) => {
