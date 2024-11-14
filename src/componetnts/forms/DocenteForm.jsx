@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, Typography, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
@@ -10,7 +11,20 @@ const EmpleadoForm = () => {
     const [iddepartamento, setIdDepartamento] = useState('');
     const [estado, setEstado] = useState('A'); // Predeterminado a "Activo"
     const [departamentos, setDepartamentos] = useState([]);
-
+useEffect(()=>{
+    fetch("http://localhost:3001/aulas")
+    .then((response) => {
+        if (!response.ok) throw new Error("Error al obtener aulas");
+        return response.json();
+    })
+    .then((data) => {
+        console.log("Departamentos obtenidos:", data);
+        setDepartamentos(data);
+    })
+    .catch((error) => {
+        console.error("Error al cargar las aulas:", error);
+    });
+}, []);
     useEffect(() => {
         fetch("http://localhost:3001/departamentos")
             .then((response) => {
@@ -18,15 +32,13 @@ const EmpleadoForm = () => {
                 return response.json();
             })
             .then((data) => {
-                console.log("Departamentos:", data); // Asegúrate de que los datos se imprimen en la consola
+                console.log("Departamentos obtenidos:", data);
                 setDepartamentos(data);
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error("Error al cargar los departamentos:", error);
             });
     }, []);
-    
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,7 +53,6 @@ const EmpleadoForm = () => {
             const data = await response.json();
             if (response.ok) {
                 alert('Empleado insertado con éxito');
-                // Reiniciar los campos del formulario
                 setDniEmpleado('');
                 setNombre('');
                 setApellido('');
@@ -105,23 +116,22 @@ const EmpleadoForm = () => {
                     onChange={(e) => setCorreo(e.target.value)}
                 />
                 <FormControl fullWidth margin="normal">
-                <InputLabel>Departamento</InputLabel>
-                <Select
-                     value={iddepartamento}
-                    onChange={(e) => setIdDepartamento(e.target.value)}
-                >
-                    {departamentos.length > 0 ? (
-                        departamentos.map((dep) => (
-                            <MenuItem key={dep.iddepartamento} value={dep.iddepartamento}>
-                                {dep.departamento}
-                            </MenuItem>
-                        ))
-                    ) : (
-                        <MenuItem value="">Cargando...</MenuItem> // Esto muestra un mensaje mientras se cargan los departamentos
-                    )}
-                </Select>
-            </FormControl>
-
+                    <InputLabel>Departamento</InputLabel>
+                    <Select
+                        value={iddepartamento}
+                        onChange={(e) => setIdDepartamento(e.target.value)}
+                    >
+                        {departamentos.length > 0 ? (
+                            departamentos.map((dep) => (
+                                <MenuItem key={dep.iddepartamento} value={dep.iddepartamento}>
+                                    {dep.departamento}
+                                </MenuItem>
+                            ))
+                        ) : (
+                            <MenuItem value="">Cargando...</MenuItem>
+                        )}
+                    </Select>
+                </FormControl>
                 <FormControl fullWidth margin="normal">
                     <InputLabel>Estado</InputLabel>
                     <Select

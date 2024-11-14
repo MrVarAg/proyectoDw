@@ -162,14 +162,106 @@ app.post('/asistencia', (req, res) => {
     });
 });
 app.get('/departamentos', (req, res) => {
-    const query = 'SELECT * FROM departamento';
-    conexion.query(query, (error) => {
+    const query = 'SELECT iddepartamento, departamento FROM departamento';
+    conexion.query(query, (error, results) => {
         if (error) {
             console.error('Error al obtener los departamentos:', error);
             res.status(500).json({ error: 'Error al obtener los departamentos' });
-        } 
+        } else {
+            res.json(results); // Envía los resultados como respuesta JSON
+        }
     });
 });
+// Ruta para obtener todas las aulas
+app.get('/aulas', (req, res) => {
+    const query = 'SELECT idAula, nomAula FROM aula';
+    conexion.query(query, (error, results) => {
+        if (error) {
+            console.error('Error al obtener aulas:', error);
+            res.status(500).json({ error: 'Error al obtener las aulas' });
+        } else {
+            res.json(results); // Envía los resultados como respuesta JSON
+        }
+    });
+});
+
+// Ruta para obtener todas las secciones
+app.get('/secciones', (req, res) => {
+    const query = 'SELECT idSeccion, nomSeccion FROM seccion';
+    conexion.query(query, (error, results) => {
+        if (error) {
+            console.error('Error al obtener secciones:', error);
+            res.status(500).json({ error: 'Error al obtener las secciones' });
+        } else {
+            res.json(results); // Envía los resultados como respuesta JSON
+        }
+    });
+});
+
+// Ruta para obtener todos los empleados
+app.get('/empleados', (req, res) => {
+    const query = 'SELECT dniempleado, nombre, apellido FROM empleado';
+    conexion.query(query, (error, results) => {
+        if (error) {
+            console.error('Error al obtener empleados:', error);
+            res.status(500).json({ error: 'Error al obtener los empleados' });
+        } else {
+            res.json(results); // Envía los resultados como respuesta JSON
+        }
+    });
+});
+
+// Ruta para insertar una clase
+app.post('/clases', (req, res) => {
+    const { nomClase, idAula, idSeccion, horarios, dniEmpleado } = req.body;
+
+    // Insertar la clase
+    const insertClaseQuery = 'INSERT INTO clase (nomClase, idAula, idSeccion) VALUES (?, ?, ?)';
+    conexion.query(insertClaseQuery, [nomClase, idAula, idSeccion], (error, result) => {
+        if (error) {
+            console.error('Error al insertar clase:', error);
+            return res.status(500).json({ error: 'Error al insertar clase' });
+        }
+
+        const claseId = result.insertId;
+
+        // Insertar cada horario en rel_clase_dia
+        const horarioPromises = horarios.map((horario) => {
+            const { dia, horaInicio, horaFin } = horario;
+            const insertHorarioQuery = 'INSERT INTO rel_clase_dia (idClase, idDia, horaInicio, horaFin) VALUES (?, ?, ?, ?)';
+            return new Promise((resolve, reject) => {
+                conexion.query(insertHorarioQuery, [claseId, dia, horaInicio, horaFin], (error) => {
+                    if (error) {
+                        console.error('Error al insertar horario:', error);
+                        return reject(error);
+                    }
+                    resolve();
+                });
+            });
+        });
+
+        // Esperar a que se completen todas las inserciones de horarios antes de asignar el docente
+        Promise.all(horarioPromises)
+            .then(() => {
+                const insertDocenteQuery = 'INSERT INTO rel_emp_cla (dniempleado, idClase) VALUES (?, ?)';
+                conexion.query(insertDocenteQuery, [dniEmpleado, claseId], (error) => {
+                    if (error) {
+                        console.error('Error al asignar docente:', error);
+                        return res.status(500).json({ error: 'Error al asignar docente a la clase' });
+                    }
+
+                    res.status(200).json({ message: 'Clase insertada con éxito', id: claseId });
+                });
+            })
+            .catch((error) => {
+                console.error('Error al insertar horarios:', error);
+                res.status(500).json({ error: 'Error al insertar horarios' });
+            });
+    });
+});
+
+
+
 
 
 
