@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -12,7 +11,13 @@ import {
   MenuItem,
   Button,
   Box,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Paper,
+  Divider,
 } from "@mui/material";
+import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 
 const PdfReport = () => {
   const [fecha, setFecha] = useState("");
@@ -45,7 +50,6 @@ const PdfReport = () => {
         try {
           const response = await fetch(url);
           const data = await response.json();
-          console.log("Datos recibidos:", data);
           setReporteData(data);
         } catch (error) {
           console.error("Error al obtener datos del reporte:", error);
@@ -101,89 +105,96 @@ const PdfReport = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4, p: 3, boxShadow: 2, borderRadius: 2 }}>
-      <Typography variant="h4" gutterBottom align="center">
-        Generador de Reporte de Asistencia
-      </Typography>
-      
-      <FormControl fullWidth sx={{ mt: 2 }}>
-        <InputLabel>Tipo de Reporte</InputLabel>
-        <Select value={tipoReporte} onChange={(e) => setTipoReporte(e.target.value)} label="Tipo de Reporte">
-          <MenuItem value="general">General</MenuItem>
-          <MenuItem value="individual">Individual</MenuItem>
-        </Select>
-      </FormControl>
+    <>
 
-      {tipoReporte === "individual" && (
-        <TextField
-          fullWidth
-          label="Número de Identidad"
-          value={numeroIdentidad}
-          onChange={handleIdentidadChange}
-          error={Boolean(errorIdentidad)}
-          helperText={errorIdentidad}
-          inputProps={{ maxLength: 13 }}
-          sx={{ mt: 2 }}
-        />
-      )}
 
-      <FormControl fullWidth sx={{ mt: 2 }}>
-        <InputLabel>Rango de Tiempo</InputLabel>
-        <Select value={rangoTiempo} onChange={(e) => setRangoTiempo(e.target.value)} label="Rango de Tiempo">
-          <MenuItem value="diario">Diario</MenuItem>
-          <MenuItem value="semanal">Semanal</MenuItem>
-          <MenuItem value="mensual">Mensual</MenuItem>
-        </Select>
-      </FormControl>
+      <Container maxWidth="md" sx={{ mt: 4, p: 3 }}>
+        <Paper sx={{ padding: 3, borderRadius: 2, boxShadow: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Configuración de Reporte
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Tipo de Reporte</InputLabel>
+            <Select value={tipoReporte} onChange={(e) => setTipoReporte(e.target.value)} label="Tipo de Reporte">
+              <MenuItem value="general">General</MenuItem>
+              <MenuItem value="individual">Individual</MenuItem>
+            </Select>
+          </FormControl>
 
-      {rangoTiempo === "diario" && (
-        <TextField
-          fullWidth
-          type="date"
-          label="Fecha"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          sx={{ mt: 2 }}
-        />
-      )}
+          {tipoReporte === "individual" && (
+            <TextField
+              fullWidth
+              label="Número de Identidad"
+              value={numeroIdentidad}
+              onChange={handleIdentidadChange}
+              error={Boolean(errorIdentidad)}
+              helperText={errorIdentidad}
+              inputProps={{ maxLength: 13 }}
+              sx={{ mb: 2 }}
+            />
+          )}
 
-      {(rangoTiempo === "semanal" || rangoTiempo === "mensual") && (
-        <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-          <TextField
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Rango de Tiempo</InputLabel>
+            <Select value={rangoTiempo} onChange={(e) => setRangoTiempo(e.target.value)} label="Rango de Tiempo">
+              <MenuItem value="diario">Diario</MenuItem>
+              <MenuItem value="semanal">Semanal</MenuItem>
+              <MenuItem value="mensual">Mensual</MenuItem>
+            </Select>
+          </FormControl>
+
+          {rangoTiempo === "diario" && (
+            <TextField
+              fullWidth
+              type="date"
+              label="Fecha"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+            />
+          )}
+
+          {(rangoTiempo === "semanal" || rangoTiempo === "mensual") && (
+            <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Fecha de Inicio"
+                value={fechaInicio}
+                onChange={(e) => setFechaInicio(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                fullWidth
+                type="date"
+                label="Fecha de Fin"
+                value={fechaFin}
+                onChange={(e) => setFechaFin(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Box>
+          )}
+
+          <Button
+            variant="contained"
+            color="primary"
             fullWidth
-            type="date"
-            label="Fecha de Inicio"
-            value={fechaInicio}
-            onChange={(e) => setFechaInicio(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            fullWidth
-            type="date"
-            label="Fecha de Fin"
-            value={fechaFin}
-            onChange={(e) => setFechaFin(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Box>
-      )}
-
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={generatePDF}
-        disabled={
-          (rangoTiempo === "diario" && !fecha) ||
-          ((rangoTiempo === "semanal" || rangoTiempo === "mensual") && (!fechaInicio || !fechaFin)) ||
-          (tipoReporte === "individual" && (numeroIdentidad.length !== 13 || Boolean(errorIdentidad)))
-        }
-        sx={{ mt: 3 }}
-      >
-        Descargar PDF
-      </Button>
-    </Container>
+            onClick={generatePDF}
+            disabled={
+              (rangoTiempo === "diario" && !fecha) ||
+              ((rangoTiempo === "semanal" || rangoTiempo === "mensual") && (!fechaInicio || !fechaFin)) ||
+              (tipoReporte === "individual" && (numeroIdentidad.length !== 13 || Boolean(errorIdentidad)))
+            }
+            sx={{ mt: 2 }}
+          >
+            Descargar PDF
+          </Button>
+        </Paper>
+      </Container>
+    </>
   );
 };
 

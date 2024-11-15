@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import appFirebase from '../src/log-credenciales';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import Login from './componetnts/Login';
 import QrReader from './componetnts/qrReader/qrReader';
-import HorarioForm from './componetnts/forms/HorarioForm';
-import Reports from './componetnts/Reports'; // Importa el componente Reports
+import ClaseForm from './componetnts/forms/HorarioForm';
+import Reports from './componetnts/Reports';
 import Menu from './componetnts/menu';
-import AulaForm from './componetnts/forms/AulaForm'; // Importa el componente AulaForm
-import Seccion from './componetnts/forms/SeccionForm'
-import Docente from './componetnts/forms/DocenteForm'
+import AulaForm from './componetnts/forms/AulaForm';
+import Seccion from './componetnts/forms/SeccionForm';
+import Docente from './componetnts/forms/DocenteForm';
 
+
+import { Button, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Icono de flecha hacia atrás
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para cerrar sesión
 import './App.css';
 
 const auth = getAuth(appFirebase);
@@ -27,53 +31,84 @@ function App() {
         return () => unsubscribe();
     }, []);
 
+    // Función para manejar la selección de opciones en el menú
     const handleSelectOption = (option) => {
         setSelectedOption(option);
     };
 
+    // Función para volver al menú principal
     const handleReturnToMenu = () => {
         setSelectedOption('menu');
+    };
+
+    // Función para cerrar sesión
+    const handleLogout = () => {
+        signOut(auth)
+            .then(() => {
+                console.log("Usuario ha cerrado sesión");
+                setUsuario(null); // Limpiar el estado de usuario
+            })
+            .catch((error) => {
+                console.error("Error al cerrar sesión: ", error);
+            });
     };
 
     return (
         <div>
             {usuario ? (
                 <>
-                    {selectedOption === 'menu' && <Menu onSelectOption={handleSelectOption} />}
-                    {selectedOption === 'assignSchedule' && (
+                    {/* Menu Principal */}
+                    {selectedOption === 'menu' && (
                         <>
-                            <HorarioForm />
-                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
+                            <AppBar position="sticky" sx={{ 
+                                backgroundColor: '#1d1934', 
+                                height:'80px', 
+                                display: 'flex',
+                                justifyContent:'center',}}>
+                                <Toolbar>
+                                    <Typography variant="h5" sx={{ flexGrow: 1, textAlign: 'center' }}>
+                                        Menú Principal
+                                    </Typography>
+                                    <IconButton edge="end" color="inherit" onClick={handleLogout}>
+                                        <ExitToAppIcon />
+                                    </IconButton>
+                                </Toolbar>
+                            </AppBar>
+                            <Menu onSelectOption={handleSelectOption} />
                         </>
                     )}
-                    {selectedOption === 'scanQr' && (
+
+                    {/* Componentes seleccionados */}
+                    {selectedOption !== 'menu' && (
                         <>
-                            <QrReader />
-                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
-                        </>
-                    )}
-                    {selectedOption === 'reports' && (
-                        <>
-                            <Reports />
-                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
-                        </>
-                    )}
-                    {selectedOption === 'aula' && (
-                        <>
-                            <AulaForm />
-                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
-                        </>
-                    )}
-                    {selectedOption === 'seccion' && (
-                        <>
-                            <Seccion />
-                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
-                        </>
-                    )}
-                    {selectedOption === 'docente' && (
-                        <>
-                            <Docente />
-                            <button onClick={handleReturnToMenu}>Volver al Menú</button>
+                            {/* AppBar con la flecha hacia atrás */}
+                            <AppBar position="sticky" sx={{ 
+                                backgroundColor: '#1d1934', 
+                                height:'80px', 
+                                display: 'flex',
+                                justifyContent:'center',}}>
+                                <Toolbar>
+                                    <IconButton edge="start" color="inherit" onClick={handleReturnToMenu} sx={{ mr: 2 }}>
+                                        <ArrowBackIcon />
+                                    </IconButton>
+                                    <Typography variant="h5" sx={{ flexGrow: 1 }}>
+                                        {selectedOption === 'assignSchedule' && 'Agregar Clase'}
+                                        {selectedOption === 'scanQr' && 'Escanear QR'}
+                                        {selectedOption === 'reports' && 'Reportes'}
+                                        {selectedOption === 'aula' && 'Aula'}
+                                        {selectedOption === 'seccion' && 'Sección'}
+                                        {selectedOption === 'docente' && 'Docente'}
+                                    </Typography>
+                                </Toolbar>
+                            </AppBar>
+
+                            {/* Renderizar el componente correspondiente */}
+                            {selectedOption === 'assignSchedule' && <ClaseForm />}
+                            {selectedOption === 'scanQr' && <QrReader />}
+                            {selectedOption === 'reports' && <Reports />}
+                            {selectedOption === 'aula' && <AulaForm />}
+                            {selectedOption === 'seccion' && <Seccion />}
+                            {selectedOption === 'docente' && <Docente />}
                         </>
                     )}
                 </>

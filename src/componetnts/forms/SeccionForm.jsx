@@ -1,6 +1,5 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
 const SeccionForm = () => {
     const [nomSeccion, setNomSeccion] = useState('');
@@ -30,19 +29,52 @@ const SeccionForm = () => {
 
     return (
         <Container maxWidth="sm">
-            <Typography variant="h4" gutterBottom>Agregar Sección</Typography>
-            <form onSubmit={handleSubmit}>
-            <TextField
-                label="Nombre de Aula"
-                variant="outlined"
-                fullWidth
-                margin="dense"  // Reduce el espaciado vertical entre los campos
-            />
-
-                <Button type="submit" variant="contained" color="primary" fullWidth>
-                    Insertar Sección
-                </Button>
-            </form>
+            <Box
+                sx={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    padding: 4,
+                    marginTop: 5,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Typography variant="h4" gutterBottom color="primary">
+                    Agregar Sección
+                </Typography>
+                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                    <TextField
+                        label="Nombre de la Sección"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        value={nomSeccion}
+                        onChange={(e) => setNomSeccion(e.target.value)}
+                        sx={{
+                            marginBottom: 2,
+                        }}
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{
+                            padding: '10px 0',
+                            fontSize: '16px',
+                            borderRadius: '30px',
+                            boxShadow: 2,
+                            '&:hover': {
+                                backgroundColor: '#1976d2',
+                            },
+                        }}
+                    >
+                        Insertar Sección
+                    </Button>
+                </form>
+            </Box>
         </Container>
     );
 };

@@ -1,6 +1,5 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
 const AulaForm = () => {
     const [nomAula, setNomAula] = useState('');
@@ -29,21 +28,53 @@ const AulaForm = () => {
     };
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom>Agregar Aula</Typography>
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Nombre del Aula"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={nomAula}
-                    onChange={(e) => setNomAula(e.target.value)}
-                />
-                <Button type="submit" variant="contained" color="primary" fullWidth>
-                    Insertar Aula
-                </Button>
-            </form>
+        <Container maxWidth="sm">
+            <Box
+                sx={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    padding: 4,
+                    marginTop: 5,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Typography variant="h4" gutterBottom color="primary">
+                    Agregar Aula
+                </Typography>
+                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                    <TextField
+                        label="Nombre del Aula"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        value={nomAula}
+                        onChange={(e) => setNomAula(e.target.value)}
+                        sx={{
+                            marginBottom: 2,
+                        }}
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{
+                            padding: '10px 0',
+                            fontSize: '16px',
+                            borderRadius: '30px',
+                            boxShadow: 2,
+                            '&:hover': {
+                                backgroundColor: '#1976d2',
+                            },
+                        }}
+                    >
+                        Insertar Aula
+                    </Button>
+                </form>
+            </Box>
         </Container>
     );
 };
