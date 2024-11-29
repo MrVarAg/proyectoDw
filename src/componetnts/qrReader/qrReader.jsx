@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useEffect, useState } from 'react';
 import '../qrReader/qrReader.css';
@@ -15,16 +14,18 @@ function QrReader() {
                 },
                 body: JSON.stringify({ dniempleado: dni, fecha, hora_entrada: hora }),
             });
+
             const data = await response.json();
+
             if (response.ok) {
                 alert('Asistencia registrada con éxito');
-                window.location.reload(); // Recargar la página para el próximo usuario
+                setScanResult(null); // Limpiar el resultado para permitir nuevos escaneos
             } else {
                 alert(`Error al registrar asistencia: ${data.error}`);
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('Hubo un error al intentar registrar la asistencia');
+            console.error('Error al registrar asistencia:', error);
+            alert('Hubo un error al intentar registrar la asistencia.');
         }
     };
 
@@ -34,39 +35,45 @@ function QrReader() {
             fps: 5,
         });
 
-        scanner.render(success, error);
-
-        function success(result) {
-            scanner.clear();
+        const handleSuccess = async (result) => {
+            scanner.pause(); // Pausar el escáner para evitar múltiples registros simultáneos
             setScanResult(result);
 
             // Capturar fecha y hora actual
             const now = new Date();
             const formattedDate = now.toISOString().split('T')[0];
-            const utc6Hour = new Date(now.toLocaleString("en-US", { timeZone: "America/Guatemala" }));
+            const utc6Hour = new Date(now.toLocaleString('en-US', { timeZone: 'America/Guatemala' }));
             const formattedTime = utc6Hour.toTimeString().split(' ')[0];
-            
-            registrarAsistencia(result, formattedDate, formattedTime);
-        }
 
-        function error(err) {
-            console.warn(err);
-        }
+            await registrarAsistencia(result, formattedDate, formattedTime);
+
+            scanner.resume(); // Reanudar el escáner después del registro
+        };
+
+        const handleError = (error) => {
+            console.warn('QR Error:', error);
+        };
+
+        scanner.render(handleSuccess, handleError);
+
+        return () => {
+            scanner.clear(); // Limpiar el escáner al desmontar el componente
+        };
     }, []);
 
     return (
-        <div className='main-div'>
-            <h1>Escaner de Códigos QR</h1>
-            {scanResult
-                ? <div>Success: <a>{scanResult}</a></div>
-                : <div id="reader"></div>
-            }
+        <div className="main-div">
+            <h1>Escáner de Códigos QR</h1>
+            {scanResult ? (
+                <div>
+                    <p>Resultado del Escaneo:</p>
+                    <a>{scanResult}</a>
+                </div>
+            ) : (
+                <div id="reader"></div>
+            )}
         </div>
     );
 }
-
-QrReader.propTypes = {
-    correoUsuario: PropTypes.string.isRequired,
-};
 
 export default QrReader;

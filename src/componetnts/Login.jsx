@@ -2,30 +2,20 @@
 import React, { useState } from 'react';
 import profile from '../assets/profile.png';
 import appFirebase from '../log-credenciales';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const auth = getAuth(appFirebase);
 
 const Login = () => {
-  const [registrando, setRegistrando] = useState(false);
-
   const fucionAutenticacion = async (e) => {
     e.preventDefault();
     const correo = e.target.email.value;
     const contrasena = e.target.password.value;
 
-    if (registrando) {
-      try {
-        await createUserWithEmailAndPassword(auth, correo, contrasena);
-      } catch (error) {
-        alert("La contraseña tiene que tener más de 8 caracteres");
-      }
-    } else {
-      try {
-        await signInWithEmailAndPassword(auth, correo, contrasena);
-      } catch (error) {
-        alert("El correo o la contraseña son incorrectos");
-      }
+    try {
+      await signInWithEmailAndPassword(auth, correo, contrasena);
+    } catch (error) {
+      alert("El correo o la contraseña son incorrectos");
     }
   };
 
@@ -40,7 +30,7 @@ const Login = () => {
             style={{ width: '80px', height: '80px', border: '2px solid #007bff' }}
           />
           <h3 className="text-center mb-4" style={{ color: '#333' }}>
-            {registrando ? "Registrarse" : "Iniciar Sesión"}
+            Iniciar Sesión
           </h3>
           <form onSubmit={fucionAutenticacion}>
             <input
@@ -60,25 +50,17 @@ const Login = () => {
             <button
               className="btn w-100 mb-3"
               style={{
-                backgroundColor: registrando ? '#28a745' : '#007bff',
+                backgroundColor: '#007bff',
                 color: '#fff',
                 borderRadius: '10px',
                 fontSize: '16px',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
               }}
             >
-              {registrando ? "Registrarse" : "Iniciar Sesión"}
+              Iniciar Sesión
             </button>
             <h5 className="text-center" style={{ color: '#666' }}>
-              {registrando ? "¿Ya tienes una cuenta? " : "¿No tienes una cuenta? "}
-              <button
-                className="btn btn-link p-0"
-                type="button"
-                onClick={() => setRegistrando(!registrando)}
-                style={{ color: '#007bff', textDecoration: 'none', fontWeight: 'bold' }}
-              >
-                {registrando ? "Inicia Sesión" : "Regístrate"}
-              </button>
+              No tienes cuenta, habla con un administrador.
             </h5>
           </form>
         </div>

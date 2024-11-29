@@ -1,9 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
+// eslint-disable-next-line no-unused-vars
 import { Button, Container, Typography, Box, AppBar, Toolbar, IconButton } from '@mui/material';
 import { signOut } from 'firebase/auth';
 import appFirebase from '../log-credenciales';
 import { getAuth } from 'firebase/auth';
+// eslint-disable-next-line no-unused-vars
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para cerrar sesión
 import ScheduleIcon from '@mui/icons-material/Schedule'; // Icono para Asignar Horario
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'; // Icono para Escanear Código QR
@@ -184,6 +186,28 @@ const Menu = ({ onSelectOption }) => {
                     >
                         <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
                         Agregar Docente
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('newqr')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}
+                    >
+                        <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                        QRcode
                     </Button>
                 </Box>
             </Container>

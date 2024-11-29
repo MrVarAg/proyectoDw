@@ -9,7 +9,7 @@ app.use(cors());
 
 const conexion = mysql.createConnection({
     host: "localhost",
-    database: "ig_asistencia",
+    database: "asistencia_is",
     user: "root",
     password: ""
 });
@@ -34,21 +34,69 @@ app.post('/aulas', (req, res) => {
     });
 });
 
+import bcrypt from 'bcrypt';
+
 app.post('/empleados', (req, res) => {
-    const { dniempleado, nombre, apellido, telefono, correo, iddepartamento, estado } = req.body;
-    const insertQuery = `
-        INSERT INTO empleado (dniempleado, nombre, apellido, telefono, correo, iddepartamento, estado) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `;
-    conexion.query(insertQuery, [dniempleado, nombre, apellido, telefono, correo, iddepartamento, estado], (error, result) => {
-        if (error) {
-            console.error("Error al insertar empleado:", error);
-            res.status(500).json({ error: 'Error al insertar el empleado' });
-        } else {
-            res.status(200).json({ message: 'Empleado insertado con éxito', id: result.insertId });
+    const { numCuenta, nombre, apellido, correo, activo, idCargo, contrasena } = req.body;
+
+    conexion.beginTransaction(async (err) => {
+        if (err) return res.status(500).json({ error: 'Error al iniciar la transacción' });
+
+        try {
+            const hashedPassword = await bcrypt.hash(contrasena, 10); // Encripta la contraseña con un salt de 10
+
+            const insertPersona = `
+                INSERT INTO persona (numCuenta, nombre, apellido, correo, activo) 
+                VALUES (?, ?, ?, ?, ?)
+            `;
+            const insertEmpleado = `
+                INSERT INTO empleado (numCuenta, idCargo)
+                VALUES (?, ?)
+            `;
+            const insertLogin = `
+                INSERT INTO login (numCuenta, contrasena)
+                VALUES (?, ?)
+            `;
+
+            // Inserta en `persona`
+            await new Promise((resolve, reject) => {
+                conexion.query(insertPersona, [numCuenta, nombre, apellido, correo, activo], (error) => {
+                    if (error) return reject(error);
+                    resolve();
+                });
+            });
+
+            // Inserta en `empleado`
+            await new Promise((resolve, reject) => {
+                conexion.query(insertEmpleado, [numCuenta, idCargo], (error) => {
+                    if (error) return reject(error);
+                    resolve();
+                });
+            });
+
+            // Inserta en `login` con contraseña encriptada
+            await new Promise((resolve, reject) => {
+                conexion.query(insertLogin, [numCuenta, hashedPassword], (error) => {
+                    if (error) return reject(error);
+                    resolve();
+                });
+            });
+
+            // Confirma la transacción
+            conexion.commit((err) => {
+                if (err) throw err;
+                res.status(200).json({ message: 'Empleado insertado con éxito' });
+            });
+        } catch (error) {
+            console.error('Error en transacción:', error);
+            conexion.rollback(() => {
+                res.status(500).json({ error: 'Error al insertar empleado' });
+            });
         }
     });
 });
+
+
 
 // Ruta para insertar una sección
 app.post('/secciones', (req, res) => {
@@ -138,23 +186,27 @@ app.get('/reporte-asistencia', (req, res) => {
 app.post('/asistencia', (req, res) => {
     const { dniempleado, fecha, hora_entrada } = req.body;
 
-    // Convertir la hora de entrada a formato de objeto Date para comparación
-    const entradaHora = new Date(`1970-01-01T${hora_entrada}Z`);
-
-    // Query para obtener la clase del docente en función de la fecha, día y hora de entrada
     const claseQuery = `
         SELECT c.idClase 
-        FROM clase c
-        JOIN rel_clase_dia r ON c.idClase = r.idClase
-        WHERE r.diaSemana = DAYOFWEEK(?) - 1
-          AND r.horaInicio <= ? AND r.horaFin >= ?
-          AND EXISTS (
-              SELECT 1 FROM rel_emp_cla re WHERE re.dniEmpleado = ? AND re.idClase = c.idClase
-          )
+        FROM rel_emp_cla rec
+        JOIN rel_clase_dia rcd ON rec.idClase = rcd.idClase
+        JOIN dias d ON rcd.idDia = d.idDia
+        JOIN clase c ON rec.idClase = c.idClase
+        WHERE rec.dniempleado = ?
+          AND d.idDia = CASE DAYOFWEEK(?)
+              WHEN 1 THEN 7
+              WHEN 2 THEN 1
+              WHEN 3 THEN 2
+              WHEN 4 THEN 3
+              WHEN 5 THEN 4
+              WHEN 6 THEN 5
+              WHEN 7 THEN 6
+          END
+          AND ? BETWEEN rcd.horaInicio AND rcd.horaFin
     `;
 
-    // Ejecutar la consulta para buscar el id de clase correspondiente
-    conexion.query(claseQuery, [fecha, entradaHora, entradaHora, dniempleado], (error, results) => {
+    // Ejecutar la consulta con los parámetros
+    conexion.query(claseQuery, [dniempleado, fecha, hora_entrada], (error, results) => {
         if (error) {
             console.error("Error al verificar clase:", error);
             return res.status(500).json({ error: 'Error al verificar la clase' });
@@ -209,11 +261,11 @@ app.post('/asistencia', (req, res) => {
     });
 });
 
-app.get('/departamentos', (req, res) => {
-    const query = 'SELECT iddepartamento, departamento FROM departamento';
+app.get('/cargos', (req, res) => {
+    const query = 'SELECT idCargo, nomCargo FROM cargo';
     conexion.query(query, (error, results) => {
         if (error) {
-            console.error('Error al obtener los departamentos:', error);
+            console.error('Error al obtener los cargo:', error);
             res.status(500).json({ error: 'Error al obtener los departamentos' });
         } else {
             res.json(results); // Envía los resultados como respuesta JSON

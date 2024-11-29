@@ -1,9 +1,11 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import appFirebase from '../src/log-credenciales';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import Login from './componetnts/Login';
 import QrReader from './componetnts/qrReader/qrReader';
+import QRScanner from './componetnts/qrReader/newQrCode';
 import ClaseForm from './componetnts/forms/HorarioForm';
 import Reports from './componetnts/Reports';
 import Menu from './componetnts/menu';
@@ -11,8 +13,7 @@ import AulaForm from './componetnts/forms/AulaForm';
 import Seccion from './componetnts/forms/SeccionForm';
 import Docente from './componetnts/forms/DocenteForm';
 
-
-import { Button, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Icono de flecha hacia atrás
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para cerrar sesión
 import './App.css';
@@ -28,17 +29,25 @@ function App() {
             setUsuario(usuarioFirebase ? usuarioFirebase : null);
         });
 
+        // Restaurar la opción seleccionada desde localStorage
+        const storedOption = localStorage.getItem('selectedOption');
+        if (storedOption) {
+            setSelectedOption(storedOption);
+        }
+
         return () => unsubscribe();
     }, []);
 
     // Función para manejar la selección de opciones en el menú
     const handleSelectOption = (option) => {
         setSelectedOption(option);
+        localStorage.setItem('selectedOption', option); // Guardar en localStorage
     };
 
     // Función para volver al menú principal
     const handleReturnToMenu = () => {
         setSelectedOption('menu');
+        localStorage.setItem('selectedOption', 'menu'); // Guardar en localStorage
     };
 
     // Función para cerrar sesión
@@ -47,6 +56,7 @@ function App() {
             .then(() => {
                 console.log("Usuario ha cerrado sesión");
                 setUsuario(null); // Limpiar el estado de usuario
+                localStorage.removeItem('selectedOption'); // Limpiar el localStorage
             })
             .catch((error) => {
                 console.error("Error al cerrar sesión: ", error);
@@ -109,6 +119,7 @@ function App() {
                             {selectedOption === 'aula' && <AulaForm />}
                             {selectedOption === 'seccion' && <Seccion />}
                             {selectedOption === 'docente' && <Docente />}
+                            {selectedOption === 'newqr' && <QRScanner />}
                         </>
                     )}
                 </>
