@@ -16,28 +16,24 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
-const EmpleadoForm = () => {
-  const [numCuenta, setnumCuenta] = useState('');
+const AlumnoForm = () => {
+  const [numCuenta, setNumCuenta] = useState('');
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [correo, setCorreo] = useState('');
-  const [idCargo, setIdCargo] = useState('');
-  const [cargos, setCargos] = useState([]);
+  const [idCarrera, setIdCarrera] = useState('');
+  const [carreras, setCarreras] = useState([]);
   const [activo, setActivo] = useState('A');
   const [errors, setErrors] = useState({});
-  const [contrasena, setContrasena] = useState('');
-  
 
   useEffect(() => {
-    fetch('http://localhost:3001/cargos')
+    fetch('http://localhost:3001/carrerasS')
       .then((response) => {
-        if (!response.ok) throw new Error('Error al obtener cargos');
+        if (!response.ok) throw new Error('Error al obtener carreras');
         return response.json();
       })
-      .then((data) => setCargos(data))
-      .catch((error) => console.error('Error al cargar los cargos:', error));
+      .then((data) => setCarreras(data))
+      .catch((error) => console.error('Error al cargar las carreras:', error));
   }, []);
 
   const validate = () => {
@@ -55,11 +51,8 @@ const EmpleadoForm = () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
       newErrors.correo = 'El correo debe tener un formato válido.';
     }
-    if (!idCargo) {
-      newErrors.idCargo = 'Debe seleccionar un cargo.';
-    }
-    if (!contrasena) {
-      newErrors.contrasena = 'Debe llenar la contraseña.';
+    if (!idCarrera) {
+      newErrors.idCarrera = 'Debe seleccionar una carrera.';
     }
 
     setErrors(newErrors);
@@ -74,7 +67,7 @@ const EmpleadoForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/empleados', {
+      const response = await fetch('http://localhost:3001/alumnos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,25 +77,23 @@ const EmpleadoForm = () => {
           nombre,
           apellido,
           correo,
-          idCargo,
           activo,
-          contrasena,
+          idCarrera,
         }),
       });
       // eslint-disable-next-line no-unused-vars
       const data = await response.json();
       if (response.ok) {
-        toast.success(`Docente "${nombre} ${apellido}" con numero de cuenta "${numCuenta}" agregado exitosamente!`);
-        setnumCuenta('');
+        toast.success(`Alumno "${nombre} ${apellido}" con número de cuenta "${numCuenta}" agregado exitosamente!`);
+        setNumCuenta('');
         setNombre('');
         setApellido('');
         setCorreo('');
-        setIdCargo('');
+        setIdCarrera('');
         setActivo('A');
-        setContrasena('');
         setErrors({});
       } else {
-        toast.error('Error al agregar el docente.');
+        toast.error('Error al agregar el alumno.');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -124,10 +115,9 @@ const EmpleadoForm = () => {
         }}
       >
         <Typography variant="h4" gutterBottom color="primary">
-          Insertar Empleado
+          Insertar Alumno
         </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          {/* Datos de Cuenta */}
           <Box sx={{ marginBottom: 3 }}>
             <Typography variant="h6" color="primary" gutterBottom>
               Datos de Cuenta
@@ -141,7 +131,7 @@ const EmpleadoForm = () => {
                   variant="outlined"
                   fullWidth
                   value={numCuenta}
-                  onChange={(e) => setnumCuenta(e.target.value)}
+                  onChange={(e) => setNumCuenta(e.target.value)}
                   error={!!errors.numCuenta}
                   helperText={errors.numCuenta}
                 />
@@ -183,16 +173,16 @@ const EmpleadoForm = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errors.idCargo}>
-                  <InputLabel>Cargo</InputLabel>
+                <FormControl fullWidth error={!!errors.idCarrera}>
+                  <InputLabel>Carrera</InputLabel>
                   <Select
-                    value={idCargo}
-                    onChange={(e) => setIdCargo(e.target.value)}
+                    value={idCarrera}
+                    onChange={(e) => setIdCarrera(e.target.value)}
                   >
-                    {cargos.length > 0 ? (
-                      cargos.map((cargo) => (
-                        <MenuItem key={cargo.idCargo} value={cargo.idCargo}>
-                          {cargo.nomCargo}
+                    {carreras.length > 0 ? (
+                      carreras.map((carrera) => (
+                        <MenuItem key={carrera.idCarrera} value={carrera.idCarrera}>
+                          {carrera.nomCarrera}
                         </MenuItem>
                       ))
                     ) : (
@@ -200,37 +190,6 @@ const EmpleadoForm = () => {
                     )}
                   </Select>
                 </FormControl>
-              </Grid>
-            </Grid>
-          </Box>
-
-          {/* Datos de Inicio de Sesión */}
-          <Box>
-            <Typography variant="h6" color="primary" gutterBottom>
-              Datos de Inicio de Sesión
-            </Typography>
-            <Divider />
-            <Grid container spacing={2} sx={{ marginTop: 2 }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Número de Cuenta (Auto-Llenado)"
-                  variant="outlined"
-                  fullWidth
-                  value={numCuenta}
-                  InputProps={{ readOnly: true }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Contraseña"
-                  variant="outlined"
-                  fullWidth
-                  type="password"
-                  value={contrasena}
-                  onChange={(e) => setContrasena(e.target.value)}
-                  error={!!errors.contrasena}
-                  helperText={errors.contrasena}
-                />
               </Grid>
             </Grid>
           </Box>
@@ -250,7 +209,7 @@ const EmpleadoForm = () => {
                 },
               }}
             >
-              Insertar Empleado
+              Insertar Alumno
             </Button>
           </Box>
         </form>
@@ -260,4 +219,4 @@ const EmpleadoForm = () => {
   );
 };
 
-export default EmpleadoForm;
+export default AlumnoForm;

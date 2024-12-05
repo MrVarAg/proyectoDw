@@ -1,9 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
+// eslint-disable-next-line no-unused-vars
 import { Button, Container, Typography, Box, AppBar, Toolbar, IconButton } from '@mui/material';
 import { signOut } from 'firebase/auth';
 import appFirebase from '../log-credenciales';
 import { getAuth } from 'firebase/auth';
+// eslint-disable-next-line no-unused-vars
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para cerrar sesión
 import ScheduleIcon from '@mui/icons-material/Schedule'; // Icono para Asignar Horario
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'; // Icono para Escanear Código QR
@@ -14,7 +16,9 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'; // Icono para Agregar
 
 const auth = getAuth(appFirebase);
 
+// eslint-disable-next-line react/prop-types
 const Menu = ({ onSelectOption }) => {
+    // eslint-disable-next-line no-unused-vars
     const handleLogout = () => {
         signOut(auth)
             .then(() => {
@@ -139,6 +143,28 @@ const Menu = ({ onSelectOption }) => {
                         <ClassroomIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
                         Agregar Aula
                     </Button>
+                    {/* Botón agregar carrera */}
+                    <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={() => onSelectOption('carrera')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#ff9800',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Agregar Carrera
+                        </Button>
                     {/* Botón Agregar Sección */}
                     <Button
                         variant="contained"
@@ -185,6 +211,117 @@ const Menu = ({ onSelectOption }) => {
                         <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
                         Agregar Docente
                     </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('newqr')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}
+                    >
+                        <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                        QRcode
+                    </Button>
+                    {/* Botón agregar alumno */}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('alumno')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Agregar Alumno
+                        </Button>
+                        {/* Botón agregar periodo */}
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('periodo')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Agregar Periodo
+                        </Button>
+                        {/* Botón asignar clase */}
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('assignClass')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Asignar Clase
+                        </Button>
+                        {/* Botón asignar Dia aula */}
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('assignDay')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Asignar Dia Clase
+                        </Button>
+                        
                 </Box>
             </Container>
         </div>

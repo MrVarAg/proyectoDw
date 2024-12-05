@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import {
     TextField, Button, Container, Typography, MenuItem, Select, InputLabel, FormControl, Grid
@@ -6,17 +7,11 @@ import {
 const ClaseForm = () => {
     const [nomAula, setNomAula] = useState([]);
     const [idAula, setIdAula] = useState('');
-<<<<<<< HEAD
     const [nomClase, setNomClase] = useState("");
     const [idSeccion, setIdSeccion] = useState("");
     const [nomSeccion, setNomSeccion] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [dias, setDias] = useState([
-=======
-    const [nomClase, setNomClase] = useState('');
-    const [idSeccion, setIdSeccion] = useState('');
-    const [nomSeccion, setNomSecciones] = useState([]);
-    const [dias] = useState([
->>>>>>> 72734d1325266fc8fec37575ff6213c230c4d65d
         { id: 1, nombre: 'Lunes' },
         { id: 2, nombre: 'Martes' },
         { id: 3, nombre: 'Miércoles' },
@@ -26,10 +21,6 @@ const ClaseForm = () => {
     const [horarios, setHorarios] = useState([{ dia: '', horaInicio: '', horaFin: '' }]);
     const [dniEmpleado, setDniEmpleado] = useState('');
     const [empleado, setEmpleado] = useState([]);
-<<<<<<< HEAD
-=======
-    const [errorNombreClase, setErrorNombreClase] = useState(false);
->>>>>>> 72734d1325266fc8fec37575ff6213c230c4d65d
 
     useEffect(() => {
         fetch("http://localhost:3001/aulas")
@@ -37,11 +28,7 @@ const ClaseForm = () => {
             .then(data => setNomAula(data));
         fetch("http://localhost:3001/secciones")
             .then(response => response.json())
-<<<<<<< HEAD
             .then(data => setNomSeccion(data));
-=======
-            .then(data => setNomSecciones(data));
->>>>>>> 72734d1325266fc8fec37575ff6213c230c4d65d
         fetch("http://localhost:3001/empleados")
             .then(response => response.json())
             .then(data => setEmpleado(data));
@@ -57,7 +44,6 @@ const ClaseForm = () => {
         setHorarios([...horarios, { dia: '', horaInicio: '', horaFin: '' }]);
     };
 
-<<<<<<< HEAD
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -73,34 +59,6 @@ const ClaseForm = () => {
             const response = await fetch('http://localhost:3001/clases', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-=======
-    const handleNombreClaseChange = (e) => {
-        const value = e.target.value;
-        if (value.length <= 40) {
-            setNomClase(value);
-            setErrorNombreClase(false);
-        } else {
-            setErrorNombreClase(true);
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const claseData = {
-                nomClase,
-                idAula,
-                idSeccion,
-                horarios,
-                dniEmpleado
-            };
-
-            const response = await fetch('http://localhost:3001/clases', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
->>>>>>> 72734d1325266fc8fec37575ff6213c230c4d65d
                 body: JSON.stringify(claseData),
             });
 
@@ -112,11 +70,8 @@ const ClaseForm = () => {
                 setHorarios([{ dia: '', horaInicio: '', horaFin: '' }]);
                 setDniEmpleado('');
             } else {
-<<<<<<< HEAD
                 const errorData = await response.json();
                 console.error('Error:', errorData);
-=======
->>>>>>> 72734d1325266fc8fec37575ff6213c230c4d65d
                 alert('Error al insertar la clase');
             }
         } catch (error) {
@@ -125,7 +80,6 @@ const ClaseForm = () => {
         }
     };
 
-<<<<<<< HEAD
     return (
         <Container style={{marginTop:30}}>
             <Typography variant="h4" gutterBottom>
@@ -223,104 +177,6 @@ const ClaseForm = () => {
                     </Button>
                 </Grid>
 
-=======
-    const isFormValid = () => {
-        return (
-            nomClase &&
-            !errorNombreClase &&
-            idAula &&
-            idSeccion &&
-            dniEmpleado &&
-            horarios.every(horario => horario.dia && horario.horaInicio && horario.horaFin)
-        );
-    };
-
-    return (
-        <Container>
-            <Typography variant="h4" gutterBottom>
-                Insertar Clase
-            </Typography>
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Nombre de la Clase"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    value={nomClase}
-                    onChange={handleNombreClaseChange}
-                    error={errorNombreClase}
-                    helperText={errorNombreClase ? "Máximo 40 caracteres" : ""}
-                />
-                <FormControl fullWidth margin="normal">
-                    <InputLabel>Aula</InputLabel>
-                    <Select
-                        value={idAula}
-                        onChange={(e) => setIdAula(e.target.value)}
-                    >
-                        {nomAula.map((aula) => (
-                            <MenuItem key={aula.idAula} value={aula.idAula}>
-                                {aula.nomAula}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel>Sección</InputLabel>
-                    <Select
-                        value={idSeccion}
-                        onChange={(e) => setIdSeccion(e.target.value)}
-                    >
-                        {nomSeccion.map((seccion) => (
-                            <MenuItem key={seccion.idSeccion} value={seccion.idSeccion}>
-                                {seccion.nomSeccion}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                <Typography variant="h6" gutterBottom>
-                    Horarios de Clase
-                </Typography>
-                {horarios.map((horario, index) => (
-                    <Grid container spacing={2} key={index} marginBottom={2}>
-                        <Grid item xs={4}>
-                            <FormControl fullWidth>
-                                <InputLabel>Día</InputLabel>
-                                <Select
-                                    value={horario.dia}
-                                    onChange={(e) => handleHorarioChange(index, 'dia', e.target.value)}
-                                >
-                                    {dias.map((dia) => (
-                                        <MenuItem key={dia.id} value={dia.id}>{dia.nombre}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                label="Hora Inicio"
-                                type="time"
-                                fullWidth
-                                value={horario.horaInicio}
-                                onChange={(e) => handleHorarioChange(index, 'horaInicio', e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                label="Hora Fin"
-                                type="time"
-                                fullWidth
-                                value={horario.horaFin}
-                                onChange={(e) => handleHorarioChange(index, 'horaFin', e.target.value)}
-                            />
-                        </Grid>
-                    </Grid>
-                ))}
-                <Button onClick={addDiaHorario} variant="outlined" style={{ marginBottom: '10px' }}>
-                    Agregar Día
-                </Button>
-
->>>>>>> 72734d1325266fc8fec37575ff6213c230c4d65d
                 <FormControl fullWidth margin="normal">
                     <InputLabel>Docente</InputLabel>
                     <Select
@@ -339,7 +195,6 @@ const ClaseForm = () => {
                     </Select>
                 </FormControl>
 
-<<<<<<< HEAD
                 <Grid container justifyContent="flex-end" style={{ marginTop: '10px' }}>
                     <Button
                         type="submit"
@@ -350,18 +205,6 @@ const ClaseForm = () => {
                         Insertar Clase
                     </Button>
                 </Grid>
-=======
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    style={{ marginTop: '10px' }}
-                    disabled={!isFormValid()}
-                >
-                    Insertar Clase
-                </Button>
->>>>>>> 72734d1325266fc8fec37575ff6213c230c4d65d
             </form>
         </Container>
     );
