@@ -25,9 +25,20 @@ const AgregarDiaClaseForm = () => {
   const [horaInicio, setHoraInicio] = useState('');
   const [horaFin, setHoraFin] = useState('');
   const [errors, setErrors] = useState({});
+  const [horarios, setHorarios] = useState([{ idDia: '', horaInicio: '', horaFin: '', idAula: '' }]);
+  
+const handeleHorarioChange = (index, field, value) => {
+    const newHorarios = [...horarios];
+    newHorarios[index][field] = value;
+    setHorarios(newHorarios);
+};
+const addDiaHorario = () => {
+    setHorarios([...horarios, { dia: '', horaInicio: '', horaFin: '', aula: '' }]);
+};
+
 
   useEffect(() => {
-    fetch('http://localhost:3001/clasesAsignadas')
+    fetch('http://localhost:3001/api/clase-creada')
       .then((response) => response.json())
       .then((data) => {
         console.log('Clases Asignadas:', data);
@@ -35,7 +46,7 @@ const AgregarDiaClaseForm = () => {
       })
       .catch((error) => console.error('Error al cargar las clases asignadas:', error));
 
-    fetch('http://localhost:3001/dias')
+    fetch('http://localhost:3001/api/dias')
       .then((response) => response.json())
       .then((data) => {
         console.log('Días:', data);
@@ -46,7 +57,7 @@ const AgregarDiaClaseForm = () => {
 
   useEffect(() => {
     if (selectedDia && horaInicio && horaFin) {
-      fetch(`http://localhost:3001/aulasDisponibles?dia=${selectedDia}&horaInicio=${horaInicio}&horaFin=${horaFin}`)
+      fetch(`http://localhost:3001/api/aulas?iddia=${selectedDia}&horaInicio=${horaInicio}&horaFin=${horaFin}`)
         .then((response) => response.json())
         .then((data) => {
           console.log('Aulas Disponibles:', data);
@@ -69,43 +80,36 @@ const AgregarDiaClaseForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) {
-      toast.error('Por favor, complete todos los campos requeridos.');
+    const horariosInvalidos = horarios.some(h => !h.idDia || !h.horaInicio || !h.horaFin || !h.idAula);
+    if(horariosInvalidos) {
+      toast.error('Por favor, complete todos los campos de horarios');
       return;
     }
-
     try {
-      const response = await fetch('http://localhost:3001/agregarDiaClase', {
+const diaClaseData = { idDia: selectedDia, horaInicio, horaFin, idAula: selectedAula, idClaseAsignada: selectedClaseAsignada };
+      const response = await fetch('http://localhost:3001/api/agregar-dia-clase', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idAula: selectedAula,
-          idClaseAsignada: selectedClaseAsignada,
-          idDia: selectedDia,
-          horaInicio,
-          horaFin,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(diaClaseData),
       });
-      const data = await response.json();
       if (response.ok) {
-        toast.success('Día de clase agregado exitosamente!');
+        toast.success('Día de clase agregado exitosamente');
         setSelectedClaseAsignada('');
         setSelectedDia('');
         setHoraInicio('');
         setHoraFin('');
         setSelectedAula('');
-        setErrors({});
       } else {
-        toast.error('Error al agregar el día de clase.');
+        const errorData = await response.json();
+        console.error('Error:', errorData);
+        toast.error('Error al agregar el día de clase');
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error:', error);
-      toast.error('Error al conectar con el servidor.');
+      toast.error('Hubo un error al intentar agregar el día de clase');
     }
   };
-
   return (
     <Container sx={{ maxWidth: 'md', marginTop: 5 }}>
       <Box
@@ -138,59 +142,7 @@ const AgregarDiaClaseForm = () => {
                   >
                     {clasesAsignadas.map((clase) => (
                       <MenuItem key={clase.idClaseAsignada} value={clase.idClaseAsignada}>
-                        {`${clase.idClaseAsignada} - ${clase.numCuenta} - ${clase.nombre} ${clase.apellido}`}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errors.dia}>
-                  <InputLabel>Día</InputLabel>
-                  <Select
-                    value={selectedDia}
-                    onChange={(e) => setSelectedDia(e.target.value)}
-                  >
-                    {dias.map((dia) => (
-                      <MenuItem key={dia.idDia} value={dia.idDia}>
-                        {dia.nomDia}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Hora de Inicio"
-                  type="time"
-                  value={horaInicio}
-                  onChange={(e) => setHoraInicio(e.target.value)}
-                  error={!!errors.horaInicio}
-                  helperText={errors.horaInicio}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Hora de Fin"
-                  type="time"
-                  value={horaFin}
-                  onChange={(e) => setHoraFin(e.target.value)}
-                  error={!!errors.horaFin}
-                  helperText={errors.horaFin}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errors.aula}>
-                  <InputLabel>Aula</InputLabel>
-                  <Select
-                    value={selectedAula}
-                    onChange={(e) => setSelectedAula(e.target.value)}
-                  >
-                    {aulas.map((aula) => (
-                      <MenuItem key={aula.idAula} value={aula.idAula}>
-                        {aula.nomAula}
+                        {`${clase.idClaseAsignada} - ${clase.nomClase} - ${clase.nomCarrera} - ${clase.nomSeccion} - ${clase.nomPeriodo}`}
                       </MenuItem>
                     ))}
                   </Select>
@@ -198,24 +150,82 @@ const AgregarDiaClaseForm = () => {
               </Grid>
             </Grid>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{
-                padding: '8px 16px',
-                fontSize: '14px',
-                borderRadius: '30px',
-                boxShadow: 2,
-                '&:hover': {
-                  backgroundColor: '#1976d2',
-                },
-              }}
-            >
-              Agregar Día de Clase
-            </Button>
+          <Box sx={{ marginTop: 3 }}>
+            <Typography variant="body2" color="textprimary" align="center">
+              Datos de horario
+            </Typography>
+            {horarios.map((horario, index) => (
+              <Grid container spacing={2} key={index} sx={{ marginTop: 2 }}>
+                <Grid item xs={4}>
+                  <FormControl fullWidth error={!!errors.dia}>
+                    <InputLabel>Día</InputLabel>
+                    <Select
+                      value={horario.idDia}
+                      onChange={(e) => handeleHorarioChange(index, 'idDia', e.target.value)}
+                    >
+                      {dias.map((dia) => (
+                        <MenuItem key={dia.idDia} value={dia.idDia}>
+                          {dia.nomDia}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Hora de Inicio"
+                    type="time"
+                    fullWidth
+                    value={horario.horaInicio}
+                    onChange={(e) => handeleHorarioChange(index, 'horaInicio', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Hora de Fin"
+                    type="time"
+                    fullWidth
+                    value={horario.horaFin}
+                    onChange={(e) => handeleHorarioChange(index, 'horaFin', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <FormControl fullWidth error={!!errors.aula}>
+                    <InputLabel>Aula</InputLabel>
+                    <Select
+                      value={horario.idAula}
+                      onChange={(e) => handeleHorarioChange(index, 'idAula', e.target.value)}
+                    >
+                      {aulas.map((aula) => (
+                        <MenuItem key={aula.idAula} value={aula.idAula}>
+                          {aula.nomAula}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            ))}
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                onClick={addDiaHorario}
+                sx={{
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  borderRadius: '30px',
+                  boxShadow: 2,
+                  '&:hover': {
+                    backgroundColor: '#1976d2',
+                  },
+                }}
+              >
+                Agregar Horario
+              </Button>
           </Box>
+        </Box>
         </form>
       </Box>
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />

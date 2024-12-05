@@ -297,7 +297,7 @@ const Menu = ({ onSelectOption }) => {
                             },
                         }}>
                             <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Asignar Clase
+                            Aperturar Clase
                         </Button>
                         {/* Botón asignar Dia aula */}
                         <Button
@@ -319,7 +319,7 @@ const Menu = ({ onSelectOption }) => {
                             },
                         }}>
                             <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Asignar Dia Clase
+                            Asignar Horario
                         </Button>
                         
                 </Box>

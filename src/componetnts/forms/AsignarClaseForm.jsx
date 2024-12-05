@@ -122,12 +122,12 @@ const AgregarClaseForm = () => {
         }}
       >
         <Typography variant="h4" gutterBottom color="primary">
-          Asignar Clase
+          Aperturar Clase
         </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <Box sx={{ marginBottom: 3 }}>
             <Typography variant="h6" color="primary" gutterBottom>
-              Datos de Asignación
+              Datos de Apertura de Clase 
             </Typography>
             <Divider />
             <Grid container spacing={2} sx={{ marginTop: 2 }}>
