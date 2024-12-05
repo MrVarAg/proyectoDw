@@ -117,7 +117,7 @@ function App() {
                                         {selectedOption === 'carrera' && 'Carrera'}
                                         {selectedOption === 'alumno' && 'Alumno'}
                                         {selectedOption === 'periodo' && 'Periodo'}
-                                        {selectedOption === 'assignClass' && 'Asignar Clase'}
+                                        {selectedOption === 'assignClass' && 'Aperurar Clase'}
                                         {selectedOption === 'assignDay' && 'Asignar Día de Clase'}
 
                                     </Typography>

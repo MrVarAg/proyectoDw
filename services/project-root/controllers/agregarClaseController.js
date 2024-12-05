@@ -64,29 +64,3 @@ export const postAsignarClase = async (req, res) => {
         res.status(500).json({ error: 'Error al asignar la clase' });
     }
 };
-export const getAulas = async (req, res) => {
-    try {
-        const {idDia, horaInicio, horaFin, idPeriodo} = req.query;
-        const selectQuery = `
-        SELECT a.idAula, a.nomAula 
-        FROM aula a
-        WHERE a.idAula NOT IN (
-            SELECT rc.idAula 
-            FROM relauladiaclase rc 
-            WHERE rc.idDia = ? 
-            AND (
-                (rc.horaInicio <= ? AND rc.horaFin > ?) 
-                OR (rc.horaInicio < ? AND rc.horaFin >= ?) 
-                OR (rc.horaInicio >= ? AND rc.horaFin <= ?)
-            ) 
-            AND rc.idPeriodo = ?
-        )
-    `;
-        const [results] = await conexion.query(selectQuery, [idDia, horaInicio, horaInicio, horaFin, horaFin, horaInicio, horaFin, idPeriodo]);
-        res.status(200).json(results);
-    }
-    catch (error) {
-        console.error('Error al consultar las aulas:', error);
-        res.status(500).json({ error: 'Error al consultar las aulas' });
-    }
-};

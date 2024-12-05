@@ -1,5 +1,5 @@
 import express from 'express';
-import { getClases, getPeriodos, getSecciones, postAsignarClase } from '../controllers/agregarClaseController.js';
+import { getClases, getPeriodos, getSecciones, postAsignarClase} from '../controllers/agregarClaseController.js';
 
 const router = express.Router();
 
