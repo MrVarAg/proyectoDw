@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import {
     TextField, Button, Container, Typography, MenuItem, Select, InputLabel, FormControl, Grid
@@ -9,6 +10,7 @@ const ClaseForm = () => {
     const [nomClase, setNomClase] = useState("");
     const [idSeccion, setIdSeccion] = useState("");
     const [nomSeccion, setNomSeccion] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [dias, setDias] = useState([
         { id: 1, nombre: 'Lunes' },
         { id: 2, nombre: 'Martes' },

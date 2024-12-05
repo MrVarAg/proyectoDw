@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import appFirebase from '../src/log-credenciales';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
+import AlumnoForm from './componetnts/forms/AlumnoForm';
 import Login from './componetnts/Login';
 import QrReader from './componetnts/qrReader/qrReader';
 import QRScanner from './componetnts/qrReader/newQrCode';
@@ -12,6 +13,10 @@ import Menu from './componetnts/menu';
 import AulaForm from './componetnts/forms/AulaForm';
 import Seccion from './componetnts/forms/SeccionForm';
 import Docente from './componetnts/forms/DocenteForm';
+import CarreraForm from './componetnts/forms/CarreraForm';
+import PeriodoForm from './componetnts/forms/AgregarPeriodo';
+import AsignarClaseForm from './componetnts/forms/AsignarClaseForm';
+import AgregarDiaClaseForm from './componetnts/forms/AgregarDiaClase';
 
 import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Icono de flecha hacia atrás
@@ -108,6 +113,13 @@ function App() {
                                         {selectedOption === 'aula' && 'Aula'}
                                         {selectedOption === 'seccion' && 'Sección'}
                                         {selectedOption === 'docente' && 'Docente'}
+                                        {selectedOption === 'newqr' && 'Nuevo QR'}
+                                        {selectedOption === 'carrera' && 'Carrera'}
+                                        {selectedOption === 'alumno' && 'Alumno'}
+                                        {selectedOption === 'periodo' && 'Periodo'}
+                                        {selectedOption === 'assignClass' && 'Asignar Clase'}
+                                        {selectedOption === 'assignDay' && 'Asignar Día de Clase'}
+
                                     </Typography>
                                 </Toolbar>
                             </AppBar>
@@ -120,6 +132,11 @@ function App() {
                             {selectedOption === 'seccion' && <Seccion />}
                             {selectedOption === 'docente' && <Docente />}
                             {selectedOption === 'newqr' && <QRScanner />}
+                            {selectedOption === 'carrera' && <CarreraForm />}
+                            {selectedOption === 'alumno' && <AlumnoForm />}
+                            {selectedOption === 'periodo' && <PeriodoForm />}
+                            {selectedOption === 'assignClass' && <AsignarClaseForm />}
+                            {selectedOption === 'assignDay' && <AgregarDiaClaseForm />}
                         </>
                     )}
                 </>

@@ -286,17 +286,26 @@ app.get('/aulas', (req, res) => {
 });
 
 // Ruta para obtener todas las secciones
-app.get('/secciones', (req, res) => {
-    const query = 'SELECT idSeccion, nomSeccion FROM seccion';
-    conexion.query(query, (error, results) => {
-        if (error) {
-            console.error('Error al obtener secciones:', error);
-            res.status(500).json({ error: 'Error al obtener las secciones' });
-        } else {
-            res.json(results); // Envía los resultados como respuesta JSON
-        }
+app.get('/seccionesC', (req, res) => {
+    const { idClase, idPeriodo, numCuenta } = req.query;
+    const selectQuery = `
+      SELECT s.idSeccion, s.nomSeccion
+      FROM seccion s
+      WHERE s.idSeccion NOT IN (
+        SELECT ac.idSeccion
+        FROM asignarclase ac
+        WHERE ac.idClase = ? AND ac.idPeriodo = ? AND ac.numCuenta = ?
+      )
+    `;
+    conexion.query(selectQuery, [idClase, idPeriodo, numCuenta], (error, results) => {
+      if (error) {
+        res.status(500).json({ error: 'Error al consultar las secciones' });
+      } else {
+        res.status(200).json(results);
+      }
     });
-});
+  });
+  
 
 // Ruta para obtener todos los empleados
 app.get('/empleados', (req, res) => {
@@ -359,13 +368,224 @@ app.post('/clases', (req, res) => {
             });
     });
 });
+app.post('/carrerasI', (req, res) => {
+    const { nomCarrera } = req.body;
+    const insertQuery = 'INSERT INTO carrera (nomCarrera) VALUES (?)';
+    conexion.query(insertQuery, [nomCarrera], (error, result) => {
+      if (error) {
+        res.status(500).json({ error: 'Error al insertar la carrera' });
+      } else {
+        res.status(200).json({ message: 'Carrera insertada con éxito', id: result.insertId });
+      }
+    });
+  });
+  app.post('/alumnos', (req, res) => {
+    const { numCuenta, nombre, apellido, correo, activo, idCarrera } = req.body;
+  
+    conexion.beginTransaction(async (err) => {
+      if (err) return res.status(500).json({ error: 'Error al iniciar la transacción' });
+  
+      try {
+        const insertPersona = `
+          INSERT INTO persona (numCuenta, nombre, apellido, correo, activo) 
+          VALUES (?, ?, ?, ?, ?)
+        `;
+        const insertAlumno = `
+          INSERT INTO alumno (numCuenta, idCarrera)
+          VALUES (?, ?)
+        `;
+  
+        await new Promise((resolve, reject) => {
+          conexion.query(insertPersona, [numCuenta, nombre, apellido, correo, activo], (error) => {
+            if (error) return reject(error);
+            resolve();
+          });
+        });
+  
+        await new Promise((resolve, reject) => {
+          conexion.query(insertAlumno, [numCuenta, idCarrera], (error) => {
+            if (error) return reject(error);
+            resolve();
+          });
+        });
+  
+        conexion.commit((err) => {
+          if (err) throw err;
+          res.status(200).json({ message: 'Alumno insertado con éxito' });
+        });
+      } catch (error) {
+        console.error('Error en transacción:', error);
+        conexion.rollback(() => {
+          res.status(500).json({ error: 'Error al insertar alumno' });
+        });
+      }
+    });
+  });
+  app.get('/carrerasS', (req, res) => {
+    const query = 'SELECT idCarrera, nomCarrera FROM carrera';
+    conexion.query(query, (error, results) => {
+      if (error) {
+        console.error('Error al obtener las carreras:', error);
+        res.status(500).json({ error: 'Error al obtener las carreras' });
+      } else {
+        res.json(results); // Envía los resultados como respuesta JSON
+      }
+    });
+  });
+  app.post('/periodos', (req, res) => {
+    const { nomPeriodo, fechaInicio, fechaFin, activo } = req.body;
 
+    if (!nomPeriodo || !fechaInicio || !fechaFin || activo === undefined) {
+        return res.status(400).json({ error: 'Todos los campos son requeridos' });
+    }
 
+    const insertPeriodoQuery = 'INSERT INTO periodo (nomPeriodo, fechaInicio, fechaFin, activo) VALUES (?, ?, ?, ?)';
+    conexion.query(insertPeriodoQuery, [nomPeriodo, fechaInicio, fechaFin, activo], (error, results) => {
+        if (error) {
+            console.error('Error al insertar periodo:', error);
+            res.status(500).json({ error: 'Error al insertar periodo' });
+        } else {
+            res.status(200).json({ message: 'Periodo insertado con éxito', id: results.insertId });
+        }
+    });
+});
+app.post('/asignarclase', (req, res) => {
+    const { idPeriodo, idClase, numCuenta, idSeccion } = req.body;
+    const insertQuery = 'INSERT INTO asignarclase (idPeriodo, idClase, numCuenta, idSeccion) VALUES (?, ?, ?, ?)';
+    
+    conexion.query(insertQuery, [idPeriodo, idClase, numCuenta, idSeccion], (error, result) => {
+      if (error) {
+        console.error('Error al insertar la asignación de clase:', error);
+        res.status(500).json({ error: 'Error al insertar la asignación de clase' });
+      } else {
+        res.status(200).json({ message: 'Asignación de clase insertada con éxito', id: result.insertId });
+      }
+    });
+  });
 
+  // Consulta de empleados (docentes)
+app.get('/docentes', (req, res) => {
+    const selectQuery = `
+      SELECT e.numCuenta, p.nombre, p.apellido
+      FROM empleado e
+      JOIN persona p ON e.numCuenta = p.numCuenta
+    `;
+    conexion.query(selectQuery, (error, results) => {
+      if (error) {
+        res.status(500).json({ error: 'Error al consultar los docentes' });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });
+  
+  // Consulta de periodos
+  app.get('/periodos', (req, res) => {
+    const selectQuery = `
+      SELECT p.idPeriodo, p.nomPeriodo, p.fechaInicio, p.fechaFin
+      FROM periodo p
+      WHERE p.activo = 1
+    `;
+    conexion.query(selectQuery, (error, results) => {
+      if (error) {
+        res.status(500).json({ error: 'Error al consultar los periodos' });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });
+  
+  // Consulta de clases
+  app.get('/clases', (req, res) => {
+    const selectQuery = `
+      SELECT c.idClase, c.nomClase, ca.nomCarrera
+      FROM clase c
+      LEFT JOIN carrera ca ON c.idCarrera = ca.idCarrera
+    `;
+    conexion.query(selectQuery, (error, results) => {
+      if (error) {
+        res.status(500).json({ error: 'Error al consultar las clases' });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });
+  app.get('/dias', (req, res) => {
+    const query = 'SELECT idDia, nomDia FROM dia';
+    conexion.query(query, (error, results) => {
+        if (error) {
+            console.error('Error al obtener días:', error);
+            res.status(500).json({ error: 'Error al obtener los días' });
+        } else {
+            res.json(results);
+        }
+    });
+});
+app.get('/aulasDisponibles', (req, res) => {
+    const { dia, horaInicio, horaFin, idPeriodo } = req.query;
+    const query = `
+        SELECT a.idAula, a.nomAula 
+        FROM aula a
+        WHERE a.idAula NOT IN (
+            SELECT rc.idAula 
+            FROM relauladiaclase rc 
+            WHERE rc.idDia = ? 
+            AND (
+                (rc.horaInicio <= ? AND rc.horaFin > ?) 
+                OR (rc.horaInicio < ? AND rc.horaFin >= ?) 
+                OR (rc.horaInicio >= ? AND rc.horaFin <= ?)
+            ) 
+            AND rc.idPeriodo = ?
+        )
+    `;
+    conexion.query(query, [dia, horaInicio, horaInicio, horaFin, horaFin, horaInicio, horaFin, idPeriodo], (error, results) => {
+        if (error) {
+            console.error('Error al obtener aulas disponibles:', error);
+            res.status(500).json({ error: 'Error al obtener las aulas disponibles' });
+        } else {
+            res.json(results);
+        }
+    });
+});
 
+  app.get('/clasesAsignadas', (req, res) => {
+    const query = `
+        SELECT ac.idClaseAsignada, ac.numCuenta, p.nombre, p.apellido
+        FROM asignarclase ac
+        INNER JOIN persona p ON p.numCuenta = ac.numCuenta
+        WHERE ac.idClaseAsignada NOT IN (
+            SELECT rc.idClaseAsignada
+            FROM relauladiaclase rc
+        )
+    `;
+    conexion.query(query, (error, results) => {
+        if (error) {
+            console.error('Error al obtener clases asignadas:', error);
+            res.status(500).json({ error: 'Error al obtener las clases asignadas' });
+        } else {
+            res.json(results);
+        }
+    });
+});
 
+app.post('/agregarDiaClase', (req, res) => {
+    const { idAula, idClaseAsignada, idDia, horaInicio, horaFin } = req.body;
+    const query = `
+        INSERT INTO relauladiaclase (idAula, idClaseAsignada, idDia, horaInicio, horaFin)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+    // eslint-disable-next-line no-unused-vars
+    conexion.query(query, [idAula, idClaseAsignada, idDia, horaInicio, horaFin], (error, results) => {
+        if (error) {
+            console.error('Error al insertar día de clase:', error);
+            res.status(500).json({ error: 'Error al insertar día de clase' });
+        } else {
+            res.json({ message: 'Día de clase agregado exitosamente' });
+        }
+    });
+});
 
-const PORT = 3001;
+const PORT = 3002;
 app.listen(PORT, () => {
     console.log(`Servidor en ejecución en http://localhost:${PORT}`);
 });
