@@ -273,4 +273,3 @@ const PdfReport = () => {
 };
 
 export default PdfReport;
-z
