@@ -18,7 +18,7 @@ export const getAulas = async (req, res) => {
                 ) 
             )`
         ;
-        const [results] = await conexion.query(selectQuery, [idDia, horaInicio, horaFin, horaFin, horaInicio, horaInicio, horaFin]);
+        const [results] = await conexion.query(selectQuery, [idDia, horaInicio, horaFin, horaInicio, horaFin, horaInicio, horaFin]);
         res.status(200).json(results);
     } catch (error) {
         console.error('Error al consultar las aulas:', error);

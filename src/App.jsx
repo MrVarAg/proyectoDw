@@ -17,6 +17,8 @@ import CarreraForm from './componetnts/forms/CarreraForm';
 import PeriodoForm from './componetnts/forms/AgregarPeriodo';
 import AsignarClaseForm from './componetnts/forms/AsignarClaseForm';
 import AgregarDiaClaseForm from './componetnts/forms/AgregarDiaClase';
+import AgregarDocenteClaseForm from './componetnts/forms/AgregarDocenteClaseForm';
+
 
 import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Icono de flecha hacia atrás
@@ -119,6 +121,8 @@ function App() {
                                         {selectedOption === 'periodo' && 'Periodo'}
                                         {selectedOption === 'assignClass' && 'Aperurar Clase'}
                                         {selectedOption === 'assignDay' && 'Asignar Día de Clase'}
+                                        {selectedOption === 'assignTeacher' && 'Asignar Docente a Clase'}
+
 
                                     </Typography>
                                 </Toolbar>
@@ -137,6 +141,7 @@ function App() {
                             {selectedOption === 'periodo' && <PeriodoForm />}
                             {selectedOption === 'assignClass' && <AsignarClaseForm />}
                             {selectedOption === 'assignDay' && <AgregarDiaClaseForm />}
+                            {selectedOption === 'assignTeacher' && <AgregarDocenteClaseForm />}
                         </>
                     )}
                 </>

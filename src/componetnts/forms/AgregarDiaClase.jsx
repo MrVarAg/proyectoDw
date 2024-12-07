@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import {
   Button,
@@ -64,6 +63,11 @@ const AgregarDiaClaseForm = () => {
     const updatedHorarios = [...horarios];
     updatedHorarios[index][field] = value;
     setHorarios(updatedHorarios);
+
+    const { idDia, horaInicio, horaFin } = updatedHorarios[index];
+    if (idDia && horaInicio && horaFin) {
+      fetchAulas(idDia, horaInicio.format('HH:mm'), horaFin.format('HH:mm'));
+    }
   };
 
   const addDiaHorario = () => {
@@ -109,6 +113,7 @@ const AgregarDiaClaseForm = () => {
         toast.success('Día(s) de clase agregado(s) exitosamente');
         setSelectedClaseAsignada('');
         setHorarios([{ idDia: '', horaInicio: null, horaFin: null, idAula: '' }]);
+        setAulas([]); // Limpiar el estado de aulas
         fetchClasesAsignadas();
         fetchDias();
         setErrors({});
