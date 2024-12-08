@@ -18,6 +18,9 @@ import PeriodoForm from './componetnts/forms/AgregarPeriodo';
 import AsignarClaseForm from './componetnts/forms/AsignarClaseForm';
 import AgregarDiaClaseForm from './componetnts/forms/AgregarDiaClase';
 import AgregarDocenteClaseForm from './componetnts/forms/AgregarDocenteClaseForm';
+import AsignarClaseAlumnoForm from './componetnts/forms/agregarClaseAlumno';
+import AgregarTareaForm from './componetnts/forms/asignarTarea';
+import AsignarNotaTareaForm from './componetnts/forms/asignarNotaTarea';
 
 
 import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
@@ -122,6 +125,9 @@ function App() {
                                         {selectedOption === 'assignClass' && 'Aperurar Clase'}
                                         {selectedOption === 'assignDay' && 'Asignar Día de Clase'}
                                         {selectedOption === 'assignTeacher' && 'Asignar Docente a Clase'}
+                                        {selectedOption === 'asignarClaseAlumno' && 'Asignar alumno a clase'}
+                                        {selectedOption === 'asignarTarea' && 'Asignar tarea'}
+                                        {selectedOption === 'asignarNotaTarea' && 'Asignar nota de tarea'}
 
 
                                     </Typography>
@@ -142,6 +148,9 @@ function App() {
                             {selectedOption === 'assignClass' && <AsignarClaseForm />}
                             {selectedOption === 'assignDay' && <AgregarDiaClaseForm />}
                             {selectedOption === 'assignTeacher' && <AgregarDocenteClaseForm />}
+                            {selectedOption === 'asignarClaseAlumno' && <AsignarClaseAlumnoForm />}
+                            {selectedOption === 'asignarTarea' && <AgregarTareaForm />}
+                            {selectedOption === 'asignarNotaTarea' && <AsignarNotaTareaForm />}
                         </>
                     )}
                 </>

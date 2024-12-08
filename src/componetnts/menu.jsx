@@ -343,6 +343,69 @@ const Menu = ({ onSelectOption }) => {
                             <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
                             Asignar Docente
                         </Button>
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('asignarClaseAlumno')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Asignar alumno a clase
+                        </Button>
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('asignarTarea')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Asignar Tarea
+                        </Button>
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('asignarNotaTarea')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Asignar nota de Tarea
+                        </Button>
                         
                 </Box>
             </Container>
