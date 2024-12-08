@@ -16,8 +16,6 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 const EmpleadoForm = () => {
   const [numCuenta, setnumCuenta] = useState('');
   const [nombre, setNombre] = useState('');
@@ -28,10 +26,9 @@ const EmpleadoForm = () => {
   const [activo, setActivo] = useState('A');
   const [errors, setErrors] = useState({});
   const [contrasena, setContrasena] = useState('');
-  
 
   useEffect(() => {
-    fetch('http://localhost:3001/cargos')
+    fetch('http://localhost:3001/api/cargos-d')
       .then((response) => {
         if (!response.ok) throw new Error('Error al obtener cargos');
         return response.json();
@@ -66,49 +63,57 @@ const EmpleadoForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const resetForm = () => {
+    setnumCuenta('');
+    setNombre('');
+    setApellido('');
+    setCorreo('');
+    setIdCargo('');
+    setActivo('A');
+    setContrasena('');
+    setErrors({});
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) {
-      toast.error('Por favor, complete todos los campos requeridos.');
-      return;
+        toast.error('Por favor, complete todos los campos requeridos.');
+        return;
     }
 
     try {
-      const response = await fetch('http://localhost:3001/empleados', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          numCuenta,
-          nombre,
-          apellido,
-          correo,
-          idCargo,
-          activo,
-          contrasena,
-        }),
-      });
-      // eslint-disable-next-line no-unused-vars
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(`Docente "${nombre} ${apellido}" con numero de cuenta "${numCuenta}" agregado exitosamente!`);
-        setnumCuenta('');
-        setNombre('');
-        setApellido('');
-        setCorreo('');
-        setIdCargo('');
-        setActivo('A');
-        setContrasena('');
-        setErrors({});
-      } else {
-        toast.error('Error al agregar el docente.');
-      }
+        const response = await fetch('http://localhost:3001/api/insert-empleado', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                numCuenta,
+                nombre,
+                apellido,
+                correo,
+                idCargo,
+                activo,
+                contrasena,
+            }),
+        });
+
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (response.ok) {
+            toast.success(`Docente "${nombre} ${apellido}" con numero de cuenta "${numCuenta}" agregado exitosamente!`);
+            resetForm();
+        } else {
+            toast.error(data.error || 'Error al agregar el docente.');
+        }
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Error al conectar con el servidor.');
+        console.error('Error:', error);
+        toast.error('Error al conectar con el servidor.');
     }
-  };
+};
+
 
   return (
     <Container sx={{ maxWidth: 'md', marginTop: 5 }}>

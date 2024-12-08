@@ -27,7 +27,7 @@ const AlumnoForm = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    fetch('http://localhost:3001/carrerasS')
+    fetch('http://localhost:3001/api/carreras-a')
       .then((response) => {
         if (!response.ok) throw new Error('Error al obtener carreras');
         return response.json();
@@ -67,7 +67,7 @@ const AlumnoForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/alumnos', {
+      const response = await fetch('http://localhost:3001/api/agregar-alumno-a', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

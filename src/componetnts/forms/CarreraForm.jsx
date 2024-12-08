@@ -34,7 +34,7 @@ const CarreraForm = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/carrerasI', {
+      const response = await fetch('http://localhost:3001/api/insert-carrera', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
