@@ -113,12 +113,11 @@ function App() {
                                     </IconButton>
                                     <Typography variant="h5" sx={{ flexGrow: 1 }}>
                                         {selectedOption === 'assignSchedule' && 'Agregar Clase'}
-                                        {selectedOption === 'scanQr' && 'Escanear QR'}
                                         {selectedOption === 'reports' && 'Reportes'}
                                         {selectedOption === 'aula' && 'Aula'}
                                         {selectedOption === 'seccion' && 'Sección'}
                                         {selectedOption === 'docente' && 'Docente'}
-                                        {selectedOption === 'newqr' && 'Nuevo QR'}
+                                        {selectedOption === 'newqr' && 'Marcar asistencia'}
                                         {selectedOption === 'carrera' && 'Carrera'}
                                         {selectedOption === 'alumno' && 'Alumno'}
                                         {selectedOption === 'periodo' && 'Periodo'}
@@ -147,7 +146,7 @@ function App() {
                             {selectedOption === 'periodo' && <PeriodoForm />}
                             {selectedOption === 'assignClass' && <AsignarClaseForm />}
                             {selectedOption === 'assignDay' && <AgregarDiaClaseForm />}
-                            {selectedOption === 'assignTeacher' && <AgregarDocenteClaseForm />}
+                            {selectedOption === 'assignTeacher' && <AgregarDocenteClaseForm/>}
                             {selectedOption === 'asignarClaseAlumno' && <AsignarClaseAlumnoForm />}
                             {selectedOption === 'asignarTarea' && <AgregarTareaForm />}
                             {selectedOption === 'asignarNotaTarea' && <AsignarNotaTareaForm />}

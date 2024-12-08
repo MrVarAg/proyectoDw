@@ -1,412 +1,406 @@
 // eslint-disable-next-line no-unused-vars
-import React from 'react';
+import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
-import { Button, Container, Typography, Box, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Button, Container, Box, Typography } from '@mui/material';
 import { signOut } from 'firebase/auth';
 import appFirebase from '../log-credenciales';
 import { getAuth } from 'firebase/auth';
 // eslint-disable-next-line no-unused-vars
-import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para cerrar sesión
 import ScheduleIcon from '@mui/icons-material/Schedule'; // Icono para Asignar Horario
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'; // Icono para Escanear Código QR
-import AssessmentIcon from '@mui/icons-material/Assessment'; // Icono para Reportes
 import ClassroomIcon from '@mui/icons-material/Class'; // Icono para Agregar Aula
-import SchoolIcon from '@mui/icons-material/School'; // Icono para Agregar Sección
+import SchoolIcon from '@mui/icons-material/School'; // Icono para Agregar Carrera
 import PersonAddIcon from '@mui/icons-material/PersonAdd'; // Icono para Agregar Docente
+import ClassIcon from '@mui/icons-material/Class';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 const auth = getAuth(appFirebase);
 
-// eslint-disable-next-line react/prop-types
 const Menu = ({ onSelectOption }) => {
-    // eslint-disable-next-line no-unused-vars
+    const [activeSection, setActiveSection] = useState(''); // Controla la visibilidad de la segunda caja
+
     const handleLogout = () => {
         signOut(auth)
             .then(() => {
-                console.log("Usuario ha cerrado sesión exitosamente");
-                alert("Sesión cerrada con éxito");
+                console.log('Usuario ha cerrado sesión exitosamente');
+                alert('Sesión cerrada con éxito');
             })
             .catch((error) => {
-                console.error("Error al cerrar sesión: ", error);
-                alert("Hubo un error al intentar cerrar sesión");
+                console.error('Error al cerrar sesión: ', error);
+                alert('Hubo un error al intentar cerrar sesión');
             });
     };
 
     return (
         <div>
-            {/* Barra de navegación con fondo degradado */}
-           
+            <Container maxWidth="lg" sx={{ marginTop: 10 }}>
+                {/* Sección del Logo */}
 
-            {/* Contenedor principal del menú */}
-            <Container maxWidth="lg" sx={{ 
-                marginTop:10,
-            }}>
+
+                {/* Primera sección de botones */}
                 <Box
                     display="grid"
-                    gridTemplateColumns="repeat(3, 1fr)"  // Tres botones por fila
-                    gap={4}  // Reducido el espacio entre los botones
-                    sx={{
-                        minHeight: '100%',  // Altura mínima del contenedor
-                        display: 'grid',
-                        justifyItems: 'center',  // Centra los botones horizontalmente
-                        gridTemplateRows: 'repeat(2, 1fr)',  // Dos filas de botones
-                    }}
+                    gridTemplateColumns="repeat(6, 1fr)" // Seis botones en una fila
+                    gap={2}
+                    sx={{ marginBottom: 4 }}
                 >
-                    {/* Botón Asignar Horario */}
-                    <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => onSelectOption('assignSchedule')}
-                        sx={{
-                            height: '150px',  // Tamaño fijo en altura
-                            width: '100%',  // El ancho será el mismo para todos
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#4caf50',
-                                boxShadow: 6,
-                            },
-                        }}
-                    >
-                        <ScheduleIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                        AGREGAR CLASE
-                    </Button>
-                    {/* Botón Escanear Código QR */}
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => onSelectOption('scanQr')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#f50057',
-                                boxShadow: 6,
-                            },
-                        }}
-                    >
-                        <QrCodeScannerIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                        Escanear Código QR
-                    </Button>
-                    {/* Botón Reportes */}
-                    <Button
-                        variant="contained"
-                        color="info"
-                        onClick={() => onSelectOption('reports')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#00bcd4',
-                                boxShadow: 6,
-                            },
-                        }}
-                    >
-                        <AssessmentIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                        Reportes
-                    </Button>
-                    {/* Botón Agregar Aula */}
-                    <Button
-                        variant="contained"
-                        color="warning"
-                        onClick={() => onSelectOption('aula')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#ff9800',
-                                boxShadow: 6,
-                            },
-                        }}
-                    >
-                        <ClassroomIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                        Agregar Aula
-                    </Button>
-                    {/* Botón agregar carrera */}
-                    <Button
-                        variant="contained"
-                        color="warning"
-                        onClick={() => onSelectOption('carrera')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#ff9800',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Agregar Carrera
-                        </Button>
-                    {/* Botón Agregar Sección */}
-                    <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => onSelectOption('seccion')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#f44336',
-                                boxShadow: 6,
-                            },
-                        }}
-                    >
-                        <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                        Agregar Sección
-                    </Button>
-                    {/* Botón Agregar Docente */}
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => onSelectOption('docente')}
+                        onClick={() => setActiveSection('persona')}
                         sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
+                            fontSize: '1rem',
                             boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
+                            '&:hover': { backgroundColor: "info", boxShadow: 4 },
                         }}
                     >
-                        <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                        Agregar Docente
+                        Persona
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setActiveSection('clase')}
+                        sx={{
+                            fontSize: '1rem',
+                            boxShadow: 2,
+                            '&:hover': { backgroundColor: "info", boxShadow: 4 },
+                        }}
+                    >
+                        Clase
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setActiveSection('institucion')}
+                        sx={{
+                            fontSize: '1rem',
+                            boxShadow: 2,
+                            '&:hover': { backgroundColor: "info", boxShadow: 4 },
+                        }}
+                    >
+                        Institución
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setActiveSection('tareas')}
+                        sx={{
+                            fontSize: '1rem',
+                            boxShadow: 2,
+                            '&:hover': { backgroundColor: "info", boxShadow: 4 },
+                        }}
+                    >
+                        Tareas
                     </Button>
                     <Button
                         variant="contained"
                         color="primary"
                         onClick={() => onSelectOption('newqr')}
                         sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
+                            fontSize: '1rem',
                             boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
+                            '&:hover': { backgroundColor: "info", boxShadow: 4 },
                         }}
                     >
-                        <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                        QRcode
+                    Asistencia
                     </Button>
-                    {/* Botón agregar alumno */}
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => onSelectOption('alumno')}
+                        onClick={() => onSelectOption('reports')}
                         sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
+                            fontSize: '1rem',
                             boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Agregar Alumno
+                            '&:hover': { backgroundColor: "info", boxShadow: 4 },
+                        }}
+                    >
+                    Reportes
+                    </Button>
+                </Box>
+
+                {/* Segunda sección de botones dinámicos */}
+                <Box
+                    display={activeSection ? 'grid' : 'none'} // Oculta la sección si no hay ninguna opción seleccionada
+                    gridTemplateColumns="repeat(3, 1fr)" // Tres botones por fila
+                    gap={4}
+                    sx={{
+                        justifyItems: 'center',
+                    }}
+                >
+                    {activeSection === 'persona' && (
+                        <>
+                           <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('docente')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Agregar Docente
                         </Button>
-                        {/* Botón agregar periodo */}
-                        <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectOption('periodo')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Agregar Periodo
+                           <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('alumno')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Agregar Alumno
                         </Button>
-                        {/* Botón asignar clase */}
+                        </>
+                    )}
+                    {activeSection === 'clase' && (
+                        <>
                         <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectOption('assignClass')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Aperturar Clase
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('assignSchedule')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <ClassIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                AGREGAR CLASE
                         </Button>
-                        {/* Botón asignar Dia aula */}
+
                         <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectOption('assignDay')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Asignar Horario
-                        </Button>
-                        {/*Boton asignar docente a clase */}
-                        <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectOption('assignTeacher')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Asignar Docente
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('seccion')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <ClassIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Agregar Sección
                         </Button>
                         <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectOption('asignarClaseAlumno')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Asignar alumno a clase
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('assignClass')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <ClassIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Aperturar Clase
                         </Button>
                         <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectOption('asignarTarea')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Asignar Tarea
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('assignDay')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <ScheduleIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Asignar Horario
                         </Button>
                         <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => onSelectOption('asignarNotaTarea')}
-                        sx={{
-                            height: '150px',
-                            width: '100%',
-                            fontSize: '1.1rem',
-                            boxShadow: 2,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            '&:hover': {
-                                backgroundColor: '#2196f3',
-                                boxShadow: 6,
-                            },
-                        }}>
-                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
-                            Asignar nota de Tarea
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('assignTeacher')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Asignar Docente a clase
                         </Button>
-                        
+                        <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('asignarClaseAlumno')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <PersonAddIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Asignar Clase a Alumno
+                        </Button>
+                        </>
+                    )}
+                    {activeSection === 'institucion' && (
+                        <>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('aula')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <ClassroomIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Agregar Aula
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('periodo')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <ClassroomIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Nuevo Periodo
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('carrera')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Agregar Carrera
+                            </Button>
+                        </>
+                    )}
+                    {activeSection === 'tareas' && (
+                        <>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('asignarTarea')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <AssignmentIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                Nueva Tarea
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => onSelectOption('asignarNotaTarea')}
+                                sx={{
+                                    height: '120px',
+                                    width: '100%',
+                                    fontSize: '1.1rem',
+                                    boxShadow: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': { boxShadow: 6 },
+                                }}
+                            >
+                                <AssignmentTurnedInIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                                nota de Tarea
+                            </Button>
+                        </>
+                    )}
+                </Box>
+                <Box display="flex" justifyContent="center" mb={4}>
+                    <img src="../src/assets/UJCV2.png" alt="Logo de la Universidad" style={{
+                         width: '300px', 
+                         padding:'50px',
+                         position:'absolute',
+                         bottom:'0',
+                         
+                         }} />
                 </Box>
             </Container>
         </div>

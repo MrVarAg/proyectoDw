@@ -15,6 +15,9 @@
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
     "@mui/x-date-pickers": "^7.22.1",
+    "@react-navigation/drawer": "^7.0.19",
+    "@react-navigation/native": "^7.0.13",
+    "@react-navigation/stack": "^7.0.18",
     "@zxing/library": "^0.21.3",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
@@ -37,6 +40,8 @@
     "process": "^0.11.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-native-gesture-handler": "^2.21.2",
+    "react-native-reanimated": "^3.16.3",
     "react-router-dom": "^6.28.0",
     "react-toastify": "^10.0.6",
     "react-zxing": "^2.0.2"

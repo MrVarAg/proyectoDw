@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useRef, useEffect, useState } from 'react';
 import jsQR from 'jsqr';
 
@@ -36,7 +35,7 @@ const QRReader = () => {
         if (code) {
           setQrCodeData(code.data);
         } else {
-          setQrCodeData('No QR code detected.');
+          setQrCodeData('QR no detectado');
         }
       }
       requestAnimationFrame(tick);
@@ -46,11 +45,14 @@ const QRReader = () => {
   }, []);
 
   return (
-    <div>
-      <h1>QR Code Reader</h1>
-      <video ref={videoRef} width="300" height="200" style={{ border: '1px solid black' }}></video>
+    <div style={{ textAlign: 'center', padding: '20px', display:'flex',
+      flexDirection:'column', justifyContent:'center', alignItems:'center'
+
+    }}>
+      <h1 style={{ color: '#333', fontSize: '1.5rem', marginBottom: '20px' }}>Acerque el codigo QR</h1>
+      <video ref={videoRef} width="auto" height="auto" style={{ border: '2px solid #00796b', borderRadius: '8px', marginBottom: '10px' }}></video>
       <canvas ref={canvasRef} hidden></canvas>
-      <p>{qrCodeData}</p>
+      <p style={{ fontSize: '1rem', color: '#555' }}>{qrCodeData}</p>
     </div>
   );
 };
