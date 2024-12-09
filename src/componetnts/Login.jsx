@@ -1,10 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import profile from '../assets/profile.png';
-import appFirebase from '../log-credenciales';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-
-const auth = getAuth(appFirebase);
+import appFirebase, { auth, signInWithEmailAndPassword } from '../log-credenciales';
 
 const Login = () => {
   const fucionAutenticacion = async (e) => {

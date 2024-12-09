@@ -8,6 +8,8 @@ import agregarCarreraRoutes from "./routes/agregarCarreraRoutes.js";
 import agregarAlumnoRoutes from "./routes/agregarAlumnoRoutes.js";
 import agregarAulaRoutes from "./routes/agregarAulaRoutes.js";
 import agregarDocenteRoutes from "./routes/agregarDocenteRoutes.js";
+import agregarClaseConCarreraRoutes from "./routes/agregarClaseConCarreraRoutes.js";
+import inicioSesionRoutes from "./routes/inicioSesionRoutes.js";
 //import asistenciaAlumnosRoutes from "./routes/asistenciaAlumnosRoutes.js";
 //import asistenciaEmpleadosRoutes from "./routes/asistenciaEmpleadosRoutes.js";
 //import clasesEmpleadosRoutes from "./routes/clasesEmpleadosRoutes.js";
@@ -25,7 +27,8 @@ app.use("/api", agregarCarreraRoutes);
 app.use("/api", agregarAlumnoRoutes);
 app.use("/api", agregarAulaRoutes);
 app.use("/api", agregarDocenteRoutes);
-
+app.use("/api", agregarClaseConCarreraRoutes);
+app.use("/api", inicioSesionRoutes);
 //app.use("/api", asistenciaAlumnosRoutes);
 //app.use("/api", asistenciaEmpleadosRoutes);
 //app.use("/api", clasesEmpleadosRoutes);

@@ -18,7 +18,8 @@ import PeriodoForm from './componetnts/forms/AgregarPeriodo';
 import AsignarClaseForm from './componetnts/forms/AsignarClaseForm';
 import AgregarDiaClaseForm from './componetnts/forms/AgregarDiaClase';
 import AgregarDocenteClaseForm from './componetnts/forms/AgregarDocenteClaseForm';
-
+import ExampleTable from './componetnts/forms/ListaPrueba';
+import ClaseConCarreraForm from './componetnts/forms/agregarClaseConCarreraForm';
 
 import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Icono de flecha hacia atrás
@@ -122,8 +123,8 @@ function App() {
                                         {selectedOption === 'assignClass' && 'Aperurar Clase'}
                                         {selectedOption === 'assignDay' && 'Asignar Día de Clase'}
                                         {selectedOption === 'assignTeacher' && 'Asignar Docente a Clase'}
-
-
+                                        {selectedOption === 'table' && 'Tabla de Prueba'}
+                                        {selectedOption === 'agregarClaseConCarrera' && 'Agregar Clase con Carrera'}
                                     </Typography>
                                 </Toolbar>
                             </AppBar>
@@ -142,6 +143,8 @@ function App() {
                             {selectedOption === 'assignClass' && <AsignarClaseForm />}
                             {selectedOption === 'assignDay' && <AgregarDiaClaseForm />}
                             {selectedOption === 'assignTeacher' && <AgregarDocenteClaseForm />}
+                            {selectedOption === 'table' && <ExampleTable />}
+                            {selectedOption === 'agregarClaseConCarrera' && <ClaseConCarreraForm />}
                         </>
                     )}
                 </>

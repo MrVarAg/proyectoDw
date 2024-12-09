@@ -1,22 +1,16 @@
 import conexion from "../models/conexion.js";
-
-export const getCargos = async (req, res) => {
-    try {
-        const selectQuery = `
-            SELECT c.idCargo, c.nomCargo
-            FROM cargo c
-        `;
-        const [results] = await conexion.query(selectQuery);
-        res.status(200).json(results);
-    } catch (error) {
-        console.error('Error al consultar los cargos:', error);
-        res.status(500).json({ error: 'Error al consultar los cargos' });
-    }
-};
+import { auth, createUserWithEmailAndPassword } from "../../../src/log-credenciales.js";
 
 export const postEmpleado = async (req, res) => {
     const { numCuenta, nombre, apellido, correo, activo, idCargo, contrasena } = req.body;
     try {
+        console.log('Intentando crear usuario en Firebase Authentication...');
+        // Crear usuario en Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, correo, contrasena);
+        const user = userCredential.user;
+        console.log('Usuario creado en Firebase Authentication:', user.uid);
+
+        // Insertar datos en la base de datos
         const insertPersona = `
             INSERT INTO persona (numCuenta, nombre, apellido, correo, activo) 
             VALUES (?, ?, ?, ?, ?)
@@ -25,17 +19,18 @@ export const postEmpleado = async (req, res) => {
             INSERT INTO empleado (numCuenta, idCargo)
             VALUES (?, ?)
         `;
-        const insertLogin = `
-            INSERT INTO login (numCuenta, contrasena)
-            VALUES (?, ?)
-        `;
         await conexion.query(insertPersona, [numCuenta, nombre, apellido, correo, activo]);
         await conexion.query(insertEmpleado, [numCuenta, idCargo]);
-        await conexion.query(insertLogin, [numCuenta, contrasena]);
 
         res.status(201).json({ message: 'Empleado agregado exitosamente' });
     } catch (error) {
         console.error('Error al agregar el empleado:', error);
-        res.status(500).json({ error: 'Error al agregar el empleado' });
+
+        // Manejo de errores específicos de Firebase
+        if (error.code && error.code.startsWith('auth/')) {
+            res.status(400).json({ error: `Error de autenticación: ${error.message}` });
+        } else {
+            res.status(500).json({ error: 'Error al agregar el empleado' });
+        }
     }
 };

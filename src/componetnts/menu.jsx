@@ -343,7 +343,50 @@ const Menu = ({ onSelectOption }) => {
                             <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
                             Asignar Docente
                         </Button>
-                        
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('table')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Prueba Lista
+                        </Button>
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => onSelectOption('agregarClaseConCarrera')}
+                        sx={{
+                            height: '150px',
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            boxShadow: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                boxShadow: 6,
+                            },
+                        }}>
+                            <SchoolIcon sx={{ fontSize: '2rem', marginBottom: 1 }} />
+                            Agregar Clase con Carrera
+                        </Button>
+
+
                 </Box>
             </Container>
         </div>
