@@ -36,7 +36,7 @@ const QRReader = () => {
         if (code) {
           setQrCodeData(code.data);
         } else {
-          setQrCodeData('No QR code detected.');
+          setQrCodeData('QR no detectado');
         }
       }
       requestAnimationFrame(tick);
@@ -46,39 +46,12 @@ const QRReader = () => {
   }, []);
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-          textAlign: 'center',
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          QR Code Reader
-        </Typography>
-        <Box
-          sx={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: '400px',
-            height: '300px',
-            border: '2px solid black',
-            borderRadius: '8px',
-            overflow: 'hidden',
-          }}
-        >
-          <video ref={videoRef} style={{ width: '100%', height: '100%' }}></video>
-          <canvas ref={canvasRef} hidden></canvas>
-        </Box>
-        <Typography variant="body1" sx={{ marginTop: 2 }}>
-          {qrCodeData}
-        </Typography>
-      </Box>
-    </Container>
+    <div>
+      <h1>QR Code Reader</h1>
+      <video ref={videoRef} width="300" height="200" style={{ border: '1px solid black' }}></video>
+      <canvas ref={canvasRef} hidden></canvas>
+      <p>{qrCodeData}</p>
+    </div>
   );
 };
 
