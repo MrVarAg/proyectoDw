@@ -5,13 +5,20 @@ export const getAsistenciaAlumnos = async (req, res) => {
 
     try {
         let query = `
-            SELECT a.fecha, a.horaEntrada, a.horaSalida, al.numCuenta
+            SELECT 
+                a.fecha, 
+                a.horaEntrada, 
+                a.horaSalida, 
+                p.nombre, 
+                p.apellido
             FROM asistencia a
             INNER JOIN asalumno asa ON a.idAsistencia = asa.idAsistencia
             INNER JOIN alumno al ON asa.numCuenta = al.numCuenta
+            INNER JOIN persona p ON al.numCuenta = p.numCuenta
         `;
 
         let params = [];
+
         if (tipo === "individual" && numCuenta) {
             query += ` WHERE al.numCuenta = ?`;
             params.push(numCuenta);
