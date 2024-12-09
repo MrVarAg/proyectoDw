@@ -25,12 +25,8 @@
     "bootstrap": "5.3.3",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
-<<<<<<< HEAD
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
-=======
-    "express": "^4.21.2",
->>>>>>> 165205a56bfbe129ca0809bc1b5e7db29ff2e7f0
     "firebase": "^10.14.0",
     "html5-qrcode": "^2.3.8",
     "i": "^0.3.7",
